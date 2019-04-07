@@ -17,17 +17,26 @@ plugins {
 }
 
 javafx {
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
 }
 
 task myJavadocs(type: Javadoc) {
   source = sourceSets.main.allJava
 }
 
+// Define the main class for the application
+mainClassName = 'midianalyser.App'
+
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
 }
 
 dependencies {
@@ -38,5 +47,4 @@ dependencies {
     testImplementation 'junit:junit:4.+'
 }
 
-// Define the main class for the application
-mainClassName = 'MidiAnalyser.App'
+
