@@ -25,7 +25,7 @@ task myJavadocs(type: Javadoc) {
 }
 
 // Define the main class for the application
-mainClassName = 'midianalyser.App'
+mainClassName = 'midianalyser.Main'
 
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -37,6 +37,13 @@ jar {
     manifest {
         attributes 'Main-Class': mainClassName
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+application {
+    applicationDefaultJvmArgs = ['-Dgreeting.language=en']
 }
 
 dependencies {
@@ -46,5 +53,7 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.+'
 }
+
+
 
 

@@ -14,4 +14,8 @@ public class App extends Application {
 		View view = new View(model, controller, stage);
 
 	}
+    
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
