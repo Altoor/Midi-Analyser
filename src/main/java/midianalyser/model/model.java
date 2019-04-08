@@ -18,11 +18,18 @@ public class Model{
 
             @Override
             public void onChanged(ListChangeListener.Change change) {
-                System.out.println("Detected a change! ");
             }
         });
 
         midiLoader = new MidiLoader(ToneList);
+    }
+
+    public void setDirectory(File dir) throws IOException{
+        midiLoader.setDirectory(dir);
+    }
+
+    public void onToneButton(){
+        midiLoader.countTones();
     }
 
     public ObservableList<Integer> getToneList(){

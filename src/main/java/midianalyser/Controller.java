@@ -54,7 +54,6 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        System.out.print("autoInit?");
     }
 
 
@@ -72,16 +71,17 @@ public class Controller {
         folderChooser.setTitle("select folder");
         File selectedFolder = folderChooser.showDialog(stage);
         if (selectedFolder != null) {
-            System.out.print("folderName: " +selectedFolder.getName());
-
-            /*TODO
             try {
-				System.out.print("testLoadingthing");
-			} catch (IOException | XMLStreamException | ClassNotFoundException e1) {
-				e1.printStackTrace();
+                model.setDirectory(selectedFolder);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-            */
 		}
+    }
+
+    @FXML
+    private void onToneButton(){
+        model.onToneButton();
     }
 
     public GridPane getToneTable(){

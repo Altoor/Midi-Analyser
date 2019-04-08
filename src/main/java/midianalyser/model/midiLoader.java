@@ -11,9 +11,10 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
+import java.io.IOException;
+
+
 import javafx.collections.ObservableList;
-
-
 
 
 //TODO checkout https://stackoverflow.com/questions/3850688/reading-midi-files-in-java
@@ -28,13 +29,17 @@ public class MidiLoader{
         listOfTones.add(1);
     }
 
-    public void setDirectory(File midiDirectory){
+    public void setDirectory(File midiDirectory) throws IOException{
         this.midiDirectory = midiDirectory;
         clearAnalytics();
+    }
+
+    public void countTones(){
     }
 
     public void clearAnalytics(){
 
     }
+
 
 }
