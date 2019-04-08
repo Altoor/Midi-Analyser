@@ -3,12 +3,30 @@ package midianalyser.model;
 import java.io.*;
 import java.util.*;
 
+import javafx.collections.ObservableList;
+import javafx.collections.ListChangeListener;
+import javafx.collections.FXCollections;
+
 public class Model{
+    MidiLoader midiLoader;
+    ObservableList<Integer> ToneList;
 
-    List<Runnable> observers;
+    public Model(){
 
-    public Model(List<String> args) throws IOException, ClassNotFoundException {
-        observers = new ArrayList<>();
+        ToneList = FXCollections.observableList(new ArrayList<Integer>());
+        ToneList.addListener(new ListChangeListener() {
+
+            @Override
+            public void onChanged(ListChangeListener.Change change) {
+                System.out.println("Detected a change! ");
+            }
+        });
+
+        midiLoader = new MidiLoader(ToneList);
+    }
+
+    public ObservableList<Integer> getToneList(){
+        return ToneList;
     }
 
 }

@@ -3,13 +3,16 @@ package midianalyser;
 import midianalyser.view.*;
 import midianalyser.model.*;
 
-import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.fxml.FXML;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import javafx.stage.DirectoryChooser;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.File;
@@ -21,12 +24,39 @@ public class Controller {
     @FXML
     private Stage stage;
 
+    @FXML
+    private Font x1;
+
+    @FXML
+    private Color x2;
+
+    @FXML
+    private GridPane toneTable;
+
+    @FXML
+    private GridPane rythmTable;
+
+    @FXML
+    private GridPane melodyTable;
+
+    @FXML
+    private Font x3;
+
+    @FXML
+    private Color x4;
+
     /**
      *
      */
     public void init(Model model) {
         this.model = model;
     }
+
+    @FXML
+    public void initialize() {
+        System.out.print("autoInit?");
+    }
+
 
     /**
      *
@@ -35,19 +65,26 @@ public class Controller {
         this.stage = stage;
     }
 
-    /**
-     *
-     */
+
     @FXML
-    private void onKeyPressed(KeyEvent e) {
-        switch (e.getCode()) {
-            case V:
-                try {
-                    new View(model, this, new Stage());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                break;
-        }
+    private void onSelectFolder(){
+        DirectoryChooser folderChooser = new DirectoryChooser();
+        folderChooser.setTitle("select folder");
+        File selectedFolder = folderChooser.showDialog(stage);
+        if (selectedFolder != null) {
+            System.out.print("folderName: " +selectedFolder.getName());
+
+            /*TODO
+            try {
+				System.out.print("testLoadingthing");
+			} catch (IOException | XMLStreamException | ClassNotFoundException e1) {
+				e1.printStackTrace();
+			}
+            */
+		}
+    }
+
+    public GridPane getToneTable(){
+        return toneTable;
     }
 }
