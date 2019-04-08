@@ -8,7 +8,7 @@ public class Model{
     List<Runnable> observers;
 
     public Model(List<String> args) throws IOException, ClassNotFoundException {
-    observers = new ArrayList<>();
-}
+        observers = new ArrayList<>();
+    }
 
 }

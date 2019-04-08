@@ -11,6 +11,6 @@ import javax.sound.midi.Track;
 
 //TODO checkout https://stackoverflow.com/questions/3850688/reading-midi-files-in-java
 
-public class midiLoader{
+public class MidiLoader{
 
 }
