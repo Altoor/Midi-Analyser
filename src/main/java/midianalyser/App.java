@@ -19,9 +19,11 @@ public class App extends Application {
         stage.setScene(new Scene(loader.load()));
         stage.getScene().getStylesheets().add("midianalyser/view/stylesheet.css");
         Controller controller = loader.getController();
-		Model model = new Model();
+
+
+		View view = new View( controller, stage);
+        Model model = new Model(view);
         controller.init(model);
-		View view = new View(model, controller, stage);
 
 	}
 
