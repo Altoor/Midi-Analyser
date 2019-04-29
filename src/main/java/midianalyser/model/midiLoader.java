@@ -9,6 +9,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.InvalidMidiDataException;
 
@@ -47,8 +48,7 @@ public class MidiLoader{
             try{
                 sequence = MidiSystem.getSequence(file);
             }catch(IOException | InvalidMidiDataException e){
-                System.out.println("what");
-                System.out.println(e.getMessage());
+                 System.out.println(e.getMessage());
                 continue;
             }
 
@@ -74,7 +74,26 @@ public class MidiLoader{
                             int velocity = sm.getData2();
                         } else {
                         }*/
-                    } else {
+                    }else if(message instanceof MetaMessage) {
+                        MetaMessage mm = (MetaMessage) message;
+                        int type = mm.getType();
+                        System.out.println(type);
+                        if(type == MidiEventType.TRACKNAME.type()){
+                        }else if(type == MidiEventType.END_OF_TRACK.type()){
+                        }else if(type == MidiEventType.SET_TEMPO.type()){
+                            System.out.print("SET_TEMPO: ");
+                            int out = 0;
+                            for(byte bt : mm.getData()){
+                                out += bt;
+                                out <<= 8;
+                                System.out.print("'" + out + "'");
+                            }
+                            System.out.println("'" + out + "'");
+                        }else if(type == MidiEventType.TIME_SIGNATURE.type()){
+                        }else if(type == MidiEventType.KEY_SIGNATURE.type()){
+
+                        }
+
                     }
                 }
             }
