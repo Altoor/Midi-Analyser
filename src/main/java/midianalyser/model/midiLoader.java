@@ -36,7 +36,7 @@ public class MidiLoader{
 
     public void setDirectory(File midiDirectory) throws IOException{
         this.midiDirectory = midiDirectory;
-        midiFiles = midiDirectory.listFiles(new MidiFilter());
+        midiFiles = midiDirectory.listFiles(new MidiFileFilter());
         for(File file : midiFiles){
             System.out.println(file.getName());
         }
@@ -53,43 +53,54 @@ public class MidiLoader{
             }
 
             int trackNumber = 0;
+            int tempo = 500000;
+            int PPQ = sequence.getResolution();
             for (Track track :  sequence.getTracks()) {
                 trackNumber++;
+                ArrayList<MidiNote> simulNotes = new ArrayList<MidiNote>();
+
 
                 for (int i=0; i < track.size(); i++) {
                     MidiEvent event = track.get(i);
                     MidiMessage message = event.getMessage();
+
                     if (message instanceof ShortMessage) {
                         ShortMessage sm = (ShortMessage) message;
                         if (sm.getCommand() == NOTE_ON) {
                             int key = sm.getData1();
                             int octave = (key / 12)-1;
                             int note = key % 12;
-                            int velocity = sm.getData2();
+
+
+                            simulNotes.add(note);
+
+
                             listOfTones.set(note,listOfTones.get(note)+1);
-                        } /*else if (sm.getCommand() == NOTE_OFF) {
+                        } else if (sm.getCommand() == NOTE_OFF) {
                             int key = sm.getData1();
                             int octave = (key / 12)-1;
                             int note = key % 12;
-                            int velocity = sm.getData2();
-                        } else {
-                        }*/
+                        }
                     }else if(message instanceof MetaMessage) {
                         MetaMessage mm = (MetaMessage) message;
                         int type = mm.getType();
                         System.out.println(type);
+
                         if(type == MidiEventType.TRACKNAME.type()){
+
                         }else if(type == MidiEventType.END_OF_TRACK.type()){
+
                         }else if(type == MidiEventType.SET_TEMPO.type()){
                             System.out.print("SET_TEMPO: ");
                             int out = 0;
                             for(byte bt : mm.getData()){
                                 out += bt;
                                 out <<= 8;
-                                System.out.print("'" + out + "'");
                             }
-                            System.out.println("'" + out + "'");
+                            tempo = out;
+
                         }else if(type == MidiEventType.TIME_SIGNATURE.type()){
+
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
 
                         }
