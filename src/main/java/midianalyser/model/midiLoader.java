@@ -28,6 +28,10 @@ public class MidiLoader{
     private File[] midiFiles;
     private Sequence sequence;
     private ArrayList<Integer> listOfTones;
+    private ArrayList<Integer> listOfRhytms;
+    private ArrayList<Integer> listOfTrochees;
+    private ArrayList<Integer> listOfDactyles;
+
 
     public MidiLoader(ArrayList<Integer> listOfTones){
         this.listOfTones = listOfTones;
@@ -55,10 +59,11 @@ public class MidiLoader{
             int trackNumber = 0;
             int tempo = 500000;
             int PPQ = sequence.getResolution();
+            int keySig = 0;
             for (Track track :  sequence.getTracks()) {
                 trackNumber++;
                 ArrayList<MidiNote> simulNotes = new ArrayList<MidiNote>();
-
+                ArrayList<MidiNote> quarter = new ArrayList<MidiNote>();
 
                 for (int i=0; i < track.size(); i++) {
                     MidiEvent event = track.get(i);
@@ -69,17 +74,23 @@ public class MidiLoader{
                         if (sm.getCommand() == NOTE_ON) {
                             int key = sm.getData1();
                             int octave = (key / 12)-1;
-                            int note = key % 12;
-
+                            MidiNote note = new MidiNote(key % 12,event.getTick(),keySig);
 
                             simulNotes.add(note);
+                            quarter.add(note);
 
-
-                            listOfTones.set(note,listOfTones.get(note)+1);
+                            listOfTones.set(note.note(),listOfTones.get(note.note())+1);
                         } else if (sm.getCommand() == NOTE_OFF) {
                             int key = sm.getData1();
                             int octave = (key / 12)-1;
                             int note = key % 12;
+
+                            for(int i = 0; i < simulNotes.length(); i++){
+                                if(simulNotes.get(i).note() == note){
+                                    simulNotes.remove(i);
+                                }
+                            }
+
                         }
                     }else if(message instanceof MetaMessage) {
                         MetaMessage mm = (MetaMessage) message;
@@ -102,7 +113,10 @@ public class MidiLoader{
                         }else if(type == MidiEventType.TIME_SIGNATURE.type()){
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
-
+                            System.out.print("KEY_SIGNATURE: ");
+                            keySig = mm.getData()[0];
+                            if(mm.getData()[1] == 1) keySig = 0-keySig;
+                            System.out.println(mm.getData()[0] + " + " +mm.getData()[1]);
                         }
 
                     }
