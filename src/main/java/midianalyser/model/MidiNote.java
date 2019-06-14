@@ -1,37 +1,48 @@
 package midianalyser.model;
 
+import java.util.Comparator;
 
-class MidiNote{
+
+public class MidiNote{
 
     private int note;
     private long startTick;
     private int songKey;
-    private long length;
+    private int length; //length denotes the fraction of a quarter node that this note is. 1 is therefore a quarter note, 2 is an eigth.
 
-    MidiNote(int note, long startTick, int songKey){
+    public MidiNote(int note, long startTick, int songKey){
         this.note = note;
         this.startTick = startTick;
         this.songKey = songKey;
     }
 
-    void setEndTick(long endTick){
-        length = endTick - startTick;
+    public void setLength(int length){
+        this.length = length;
     }
 
-    int note(){
+    public int note(){
         return note;
     }
 
-    long startTick(){
+    public long startTick(){
         return startTick;
     }
 
-    int songKey(){
+    public int songKey(){
         return songKey;
     }
 
-    long length(){
+    public long length(){
         return length;
     }
 
+}
+
+class SortByStartTick implements Comparator<MidiNote>
+{
+
+    public int compare(MidiNote a, MidiNote b)
+    {
+        return (int) (a.startTick() - b.startTick());
+    }
 }

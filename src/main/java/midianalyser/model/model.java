@@ -13,14 +13,17 @@ import javafx.collections.FXCollections;
 public class Model{
     MidiLoader midiLoader;
     ArrayList<Integer> toneList;
+    ArrayList<Integer> rhythmList;
     View view;
 
     public Model(View view){
         this.view = view;
         toneList = new ArrayList<Integer>();
         for(int i = 0; i < 12; i++) toneList.add(0);
+        rhythmList = new ArrayList<Integer>();
+        for(int i = 0; i < 10; i++) rhythmList.add(0);
 
-        midiLoader = new MidiLoader(toneList);
+        midiLoader = new MidiLoader(toneList, rhythmList);
     }
 
 
@@ -29,8 +32,10 @@ public class Model{
     }
 
     public void onToneButton(){
-        toneList = midiLoader.countTones();
-        view.updateGrids(toneList);
+        midiLoader.countAll();
+        toneList = midiLoader.listOfTones();
+        rhythmList = midiLoader.listOfRhythms();
+        view.updateGrids(toneList,rhythmList);
     }
 
     public ArrayList<Integer> getToneList(){

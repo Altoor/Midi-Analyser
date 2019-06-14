@@ -34,7 +34,7 @@ public class Controller {
     private GridPane toneTable;
 
     @FXML
-    private GridPane rythmTable;
+    private GridPane rhythmTable;
 
     @FXML
     private GridPane melodyTable;
@@ -86,5 +86,13 @@ public class Controller {
 
     public GridPane getToneTable(){
         return toneTable;
+    }
+
+    public GridPane getRhythmTable(){
+        return rhythmTable;
+    }
+
+    public GridPane getMelodyTable(){
+        return melodyTable;
     }
 }
