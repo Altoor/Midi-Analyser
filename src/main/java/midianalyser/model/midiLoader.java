@@ -76,13 +76,11 @@ public class MidiLoader{
 
                     if (message instanceof ShortMessage) {
                         ShortMessage sm = (ShortMessage) message;
+                        System.out.println(sm.getCommand());
                         if (sm.getCommand() == NOTE_ON) {
                             int key = sm.getData1();
                             int octave = (key / 12)-1;
                             MidiNote note = new MidiNote(key % 12,event.getTick(),keySig);
-
-
-
 
                             if(event.getTick() >= currQuarterTick + PPQ){
                                 currQuarterTick = event.getTick()-(event.getTick() % PPQ);
@@ -103,12 +101,15 @@ public class MidiLoader{
                             for(int n = 0; n < simulNotes.size(); n++){
                                 if(simulNotes.get(n).note() == note){
                                     int lengthInTicks = (int) (event.getTick() - simulNotes.get(n).startTick());
+                                    System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
+                                    simulNotes.get(n).setLength(0);
                                     for(int l = 1; l < 32; l ++){
-                                        if(lengthInTicks == (PPQ/l)){
+                                        if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/5) && lengthInTicks < (int) (PPQ/l)+((PPQ/l)/5)){
                                             simulNotes.get(n).setLength(l);
+                                            break;
                                         }
                                     }
-
+                                    System.out.println("length: " + simulNotes.get(n).length());
                                     simulNotes.remove(n);
                                 }
                             }
@@ -124,7 +125,6 @@ public class MidiLoader{
                         }else if(type == MidiEventType.END_OF_TRACK.type()){
 
                         }else if(type == MidiEventType.SET_TEMPO.type()){
-                            System.out.print("SET_TEMPO: ");
                             int out = 0;
                             for(byte bt : mm.getData()){
                                 out += bt;
@@ -135,7 +135,6 @@ public class MidiLoader{
                         }else if(type == MidiEventType.TIME_SIGNATURE.type()){
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
-                            System.out.print("KEY_SIGNATURE: ");
                             keySig = mm.getData()[0];
                             if(mm.getData()[1] == 1) keySig = 0-keySig;
                             //System.out.println(mm.getData()[0] + " + " +mm.getData()[1]);
@@ -154,7 +153,12 @@ public class MidiLoader{
                 listOfRhythms.set(0,listOfRhythms.get(0)+1);
                 break;
             case 2:
-                listOfRhythms.set(1,listOfRhythms.get(1)+1);
+                if(quarter.get(0).length() == 2 && quarter.get(1).length() == 2){
+                    listOfRhythms.set(1,listOfRhythms.get(1)+1);
+                }else if(quarter.get(0).length() == 2 && quarter.get(1).length() == 2){
+
+                }
+
                 break;
             case 3:
                 listOfRhythms.set(4,listOfRhythms.get(4)+1);

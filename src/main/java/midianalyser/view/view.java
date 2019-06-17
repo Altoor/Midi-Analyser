@@ -32,6 +32,7 @@ public class View {
 		text.setTextAlignment(TextAlignment.CENTER);
 
 		//toneTable
+		toneTable.getChildren().clear();
 		for(int i = 0; i < 12; i++){
 			//the tone Step
 			text = new Text(""+i);
@@ -46,6 +47,7 @@ public class View {
 		}
 
 		//rhytmTable
+		rhythmTable.getChildren().clear();
 		for(int i = 0; i < 10; i++){
 			//the tone Step
 			text = new Text(""+i);

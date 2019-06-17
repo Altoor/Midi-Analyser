@@ -37,7 +37,10 @@ public class Controller {
     private GridPane rhythmTable;
 
     @FXML
-    private GridPane melodyTable;
+    private GridPane trochaicTable;
+
+    @FXML
+    private GridPane dactylTable;
 
     @FXML
     private Font x3;
@@ -92,7 +95,11 @@ public class Controller {
         return rhythmTable;
     }
 
-    public GridPane getMelodyTable(){
-        return melodyTable;
+    public GridPane getTrochaicTable(){
+        return trochaicTable;
+    }
+
+    public GridPane getDactylTable(){
+        return dactylTable;
     }
 }
