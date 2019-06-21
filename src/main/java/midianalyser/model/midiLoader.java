@@ -45,6 +45,13 @@ public class MidiLoader{
 
     }
 
+    public void setLists(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, HashMap<String, Integer> mapOfTrochees, HashMap<String, Integer> mapOfDactyles){
+        this.listOfTones = listOfTones;
+        this.listOfRhythms = listOfRhythms;
+        this.mapOfTrochees = mapOfTrochees;
+        this.mapOfDactyles = mapOfDactyles;
+    }
+
     public void setDirectory(File midiDirectory) throws IOException{
         this.midiDirectory = midiDirectory;
         midiFiles = midiDirectory.listFiles(new MidiFileFilter());

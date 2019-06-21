@@ -20,13 +20,17 @@ public class Model{
 
     public Model(View view){
         this.view = view;
+        initList();
+        midiLoader = new MidiLoader(toneList, rhythmList, mapOfTrochees, mapOfDactyles);
+    }
+
+    public void initList(){
         toneList = new ArrayList<Integer>();
         for(int i = 0; i < 12; i++) toneList.add(0);
         rhythmList = new ArrayList<Integer>();
         for(int i = 0; i < 10; i++) rhythmList.add(0);
         mapOfTrochees = new HashMap<String, Integer>();
         mapOfDactyles = new HashMap<String, Integer>();
-        midiLoader = new MidiLoader(toneList, rhythmList, mapOfTrochees, mapOfDactyles);
     }
 
 
@@ -35,6 +39,8 @@ public class Model{
     }
 
     public void onToneButton(){
+        initList();
+        midiLoader.setLists(toneList, rhythmList, mapOfTrochees, mapOfDactyles);
         midiLoader.countAll();
         toneList = midiLoader.listOfTones();
         rhythmList = midiLoader.listOfRhythms();
