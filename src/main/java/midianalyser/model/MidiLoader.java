@@ -111,7 +111,9 @@ public class MidiLoader{
                             simulNotes.add(note);
                             quarter.add(note);
 
-                            listOfTones.set(note.note() % 12,listOfTones.get(note.note() % 12)+1);
+                            int noteFromKey = keySigCheck(note.note(), keySig, majorKey);
+
+                            listOfTones.set(noteFromKey,listOfTones.get(noteFromKey)+1);
                         } else if (sm.getCommand() == NOTE_OFF || sm.getCommand() == NOTE_ON && sm.getData2() == 0) {
                             int key = sm.getData1();
 
@@ -236,47 +238,18 @@ public class MidiLoader{
 
     }
 
-    public int keySigScale(int keySig, boolean majorKey){
-        int startKey = 0;
-        if(majorKey){
-            switch(keySig){
-                case 0: startKey = 0; break;
-                case 1: startKey = 5; break;
-                /*
-                case 2: toneDifference = 11; break;
-                case 3: toneDifference = 4; break;
-                case 4: toneDifference = 3; break;
-                case 5: toneDifference = 4; break;
-                case 6: toneDifference = 5; break;
-                case 7: toneDifference = 5; break;
-                case 8: toneDifference = 6; break;
-                case 9: toneDifference = 6; break;
-                case 10: toneDifference = 7; break;
-                case 11: toneDifference = 7; break;
-                case 12: toneDifference = 8; break;*/
-                default: startKey = 0; break;
-            }
-        }else{
-            /*
-            switch(keySig){
-                case 0: startKey = 0; break;
-                case 1: startKey = 5; break;
-                case 2: toneDifference = 11; break;
-                case 3: toneDifference = 4; break;
-                case 4: toneDifference = 3; break;
-                case 5: toneDifference = 4; break;
-                case 6: toneDifference = 5; break;
-                case 7: toneDifference = 5; break;
-                case 8: toneDifference = 6; break;
-                case 9: toneDifference = 6; break;
-                case 10: toneDifference = 7; break;
-                case 11: toneDifference = 7; break;
-                case 12: toneDifference = 8; break;
-                default: toneDifference = 1; break;
-            }
-            */
+    public int keySigCheck(int node, int keySig, boolean majorKey){
+            int keyNote = 0;
+        if(!majorKey){
+            keyNote = 9;
         }
-        return startKey;
+        keyNote = (keyNote+(7*keySig)) %12;
+
+        node %= 12;
+        if(node < keyNote) node += 12;
+
+
+        return (node-keyNote)%12;
 
     }
 
