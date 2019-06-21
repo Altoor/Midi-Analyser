@@ -19,15 +19,20 @@ import java.io.IOException;
 public class View {
 	private GridPane toneTable;
 	private GridPane rhythmTable;
+	private GridPane trochaicTable;
+	private GridPane dactylTable;
+
 
 	public View(Controller controller, Stage primaryStage) throws IOException {
 		controller.setStage(primaryStage);
 		this.toneTable = controller.getToneTable();
 		this.rhythmTable = controller.getRhythmTable();
+		this.trochaicTable = controller.getTrochaicTable();
+		this.dactylTable = controller.getDactylTable();
 		primaryStage.show();
 	}
 
-	public void updateGrids(ArrayList<Integer> toneList, ArrayList<Integer> rhythmList){
+	public void updateGrids(ArrayList<Integer> toneList, ArrayList<Integer> rhythmList, HashMap<String, Integer> mapOfTrochees, HashMap<String, Integer> mapOfDactyles){
 		Text text = new Text();
 		text.setTextAlignment(TextAlignment.CENTER);
 
@@ -49,16 +54,41 @@ public class View {
 		//rhytmTable
 		rhythmTable.getChildren().clear();
 		for(int i = 0; i < 10; i++){
-			//the tone Step
-			text = new Text(""+i);
-			rhythmTable.setConstraints(text, 0, i);
-			rhythmTable.getChildren().add(text);
 
-			//the # of tones
 			text = new Text("" +rhythmList.get(i));
 			rhythmTable.setConstraints(text, 1, i);
 			rhythmTable.getChildren().add(text);
 		}
+
+		//rhytmTable
+		trochaicTable.getChildren().clear();
+		int q = 0;
+		for (Map.Entry<String, Integer> entry : mapOfTrochees.entrySet()) {
+
+			text = new Text(entry.getKey());
+			trochaicTable.setConstraints(text, 0, q);
+			trochaicTable.getChildren().add(text);
+
+			text = new Text("" +entry.getValue());
+			trochaicTable.setConstraints(text, 1, q);
+			trochaicTable.getChildren().add(text);
+			q++;
+		}
+
+		dactylTable.getChildren().clear();
+		q = 0;
+		for (Map.Entry<String, Integer> entry : mapOfDactyles.entrySet()) {
+			System.out.println(entry.getKey());
+			text = new Text(entry.getKey());
+			dactylTable.setConstraints(text, 0, q);
+			dactylTable.getChildren().add(text);
+
+			text = new Text("" +entry.getValue());
+			dactylTable.setConstraints(text, 1, q);
+			dactylTable.getChildren().add(text);
+			q++;
+		}
+
 
 
 	}

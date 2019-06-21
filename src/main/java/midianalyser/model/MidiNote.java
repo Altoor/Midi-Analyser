@@ -8,7 +8,7 @@ public class MidiNote{
     private int note;
     private long startTick;
     private int songKey;
-    private int length; //length denotes the fraction of a quarter node that this note is. 1 is therefore a quarter note, 2 is an eigth.
+    private double length; //length denotes the length in ticks
 
     public MidiNote(int note, long startTick, int songKey){
         this.note = note;
@@ -16,7 +16,7 @@ public class MidiNote{
         this.songKey = songKey;
     }
 
-    public void setLength(int length){
+    public void setLength(double length){
         this.length = length;
     }
 
@@ -32,7 +32,7 @@ public class MidiNote{
         return songKey;
     }
 
-    public long length(){
+    public double length(){
         return length;
     }
 

@@ -10,6 +10,8 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -100,12 +102,83 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <GridPane fx:id="rhythmTable" alignment="CENTER" layoutX="257.0" layoutY="213.0" prefHeight="0.0" prefWidth="0.0">
+                              <GridPane alignment="CENTER" layoutX="157.0" layoutY="-2.0" prefHeight="484.0" prefWidth="219.0">
                                  <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="89.0" minWidth="51.0" prefWidth="51.0" />
                                  </columnConstraints>
                                  <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="34.0">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20133555.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="44.0" fitWidth="40.0" GridPane.rowIndex="1">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134211.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="37.0" fitWidth="47.0" GridPane.rowIndex="2">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134226.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="46.0" fitWidth="49.0" GridPane.rowIndex="3">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134244.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="44.0" fitWidth="58.0" GridPane.rowIndex="4">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134253.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="43.0" fitWidth="67.0" GridPane.rowIndex="5">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134305.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="43.0" fitWidth="70.0" GridPane.rowIndex="6">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134318.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="38.0" fitWidth="68.0" GridPane.rowIndex="7">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134326.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="52.0" fitWidth="81.0" GridPane.rowIndex="8">
+                                       <image>
+                                          <Image url="@Note%20PNG's/Annotation%202019-06-20%20134341.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
+                              <GridPane fx:id="rhythmTable" alignment="CENTER" layoutX="197.0" layoutY="-4.0" prefHeight="493.0" prefWidth="189.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="112.0" minWidth="51.0" prefWidth="107.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="-Infinity" prefWidth="78.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="51.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="51.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

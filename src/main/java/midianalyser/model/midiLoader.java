@@ -4,7 +4,9 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
+import java.lang.Math;
 
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
@@ -31,13 +33,15 @@ public class MidiLoader{
     private Sequence sequence;
     private ArrayList<Integer> listOfTones;
     private ArrayList<Integer> listOfRhythms;
-    private ArrayList<Integer> listOfTrochees;
-    private ArrayList<Integer> listOfDactyles;
+    private HashMap<String, Integer> mapOfTrochees;
+    private HashMap<String, Integer> mapOfDactyles;
 
 
-    public MidiLoader(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms){
+    public MidiLoader(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, HashMap<String, Integer> mapOfTrochees, HashMap<String, Integer> mapOfDactyles){
         this.listOfTones = listOfTones;
         this.listOfRhythms = listOfRhythms;
+        this.mapOfTrochees = mapOfTrochees;
+        this.mapOfDactyles = mapOfDactyles;
 
     }
 
@@ -64,6 +68,7 @@ public class MidiLoader{
             int PPQ = sequence.getResolution();
             long currQuarterTick =0; // round down to nearest tick representing a quarter
             int keySig = 0;
+            boolean majorKey = true;
 
             for (Track track :  sequence.getTracks()) {
                 trackNumber++;
@@ -77,39 +82,41 @@ public class MidiLoader{
                     if (message instanceof ShortMessage) {
                         ShortMessage sm = (ShortMessage) message;
                         System.out.println(sm.getCommand());
-                        if (sm.getCommand() == NOTE_ON) {
+                        if (sm.getCommand() == NOTE_ON && sm.getData2() != 0) {
                             int key = sm.getData1();
-                            int octave = (key / 12)-1;
-                            MidiNote note = new MidiNote(key % 12,event.getTick(),keySig);
+                            MidiNote note = new MidiNote(key,event.getTick(),keySig);
 
                             if(event.getTick() >= currQuarterTick + PPQ){
                                 currQuarterTick = event.getTick()-(event.getTick() % PPQ);
 
                                 Collections.sort(quarter, new SortByStartTick());
                                 rhythmCheck(quarter);
+                                if(quarter.size() ==2){
+                                    TrochaicCheck(quarter);
+                                }else if(quarter.size() ==3){
+                                    DactylCheck(quarter);
+                                }
                                 quarter.clear();
                             }
                             simulNotes.add(note);
                             quarter.add(note);
 
-                            listOfTones.set(note.note(),listOfTones.get(note.note())+1);
-                        } else if (sm.getCommand() == NOTE_OFF) {
+                            listOfTones.set(note.note() % 12,listOfTones.get(note.note() % 12)+1);
+                        } else if (sm.getCommand() == NOTE_OFF || sm.getCommand() == NOTE_ON && sm.getData2() == 0) {
                             int key = sm.getData1();
-                            int octave = (key / 12)-1;
-                            int note = key % 12;
 
                             for(int n = 0; n < simulNotes.size(); n++){
-                                if(simulNotes.get(n).note() == note){
+                                if(simulNotes.get(n).note() == key){
                                     int lengthInTicks = (int) (event.getTick() - simulNotes.get(n).startTick());
+                                    System.out.println("note: " + key);
                                     System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
-                                    for(int l = 1; l < 32; l ++){
+                                    for(double l = 1; l < 32; l +=0.5){
                                         if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/5) && lengthInTicks < (int) (PPQ/l)+((PPQ/l)/5)){
                                             simulNotes.get(n).setLength(l);
                                             break;
                                         }
                                     }
-                                    System.out.println("length: " + simulNotes.get(n).length());
                                     simulNotes.remove(n);
                                 }
                             }
@@ -136,8 +143,8 @@ public class MidiLoader{
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
                             keySig = mm.getData()[0];
-                            if(mm.getData()[1] == 1) keySig = 0-keySig;
-                            //System.out.println(mm.getData()[0] + " + " +mm.getData()[1]);
+                            if(mm.getData()[1] == 1) majorKey = false;
+                            System.out.println("keySig :" +keySig);
                         }
 
                     }
@@ -153,15 +160,25 @@ public class MidiLoader{
                 listOfRhythms.set(0,listOfRhythms.get(0)+1);
                 break;
             case 2:
-                if(quarter.get(0).length() == 2 && quarter.get(1).length() == 2){
+                if(quarter.get(0).length() == 2.0 && quarter.get(1).length() == 2.0){
                     listOfRhythms.set(1,listOfRhythms.get(1)+1);
-                }else if(quarter.get(0).length() == 2 && quarter.get(1).length() == 2){
-
+                }else if(quarter.get(0).length() == 1.5 && quarter.get(1).length() == 3.5){
+                    listOfRhythms.set(2,listOfRhythms.get(2)+1);
+                }else if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 1.5){
+                    listOfRhythms.set(3,listOfRhythms.get(3)+1);
                 }
-
                 break;
             case 3:
-                listOfRhythms.set(4,listOfRhythms.get(4)+1);
+                if(quarter.get(0).length() == 3.0 && quarter.get(1).length() == 3.0 && quarter.get(2).length() == 3.0){
+                    listOfRhythms.set(4,listOfRhythms.get(4)+1);
+                }else if(quarter.get(0).length() == 2.0 && quarter.get(1).length() == 3.5 && quarter.get(2).length() == 3.5){
+                    listOfRhythms.set(5,listOfRhythms.get(5)+1);
+                }else if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 3.5 && quarter.get(2).length() == 2.0){
+                    listOfRhythms.set(6,listOfRhythms.get(6)+1);
+                }else if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 2.0 && quarter.get(2).length() == 3.5){
+                    listOfRhythms.set(6,listOfRhythms.get(6)+1);
+                }
+
                 break;
             case 4:
                 listOfRhythms.set(8,listOfRhythms.get(8)+1);
@@ -170,6 +187,66 @@ public class MidiLoader{
                 listOfRhythms.set(9,listOfRhythms.get(9)+1);
         }
 
+    }
+
+    public void TrochaicCheck(ArrayList<MidiNote> quarter){
+        int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note());
+        String sharpNotater = "";
+        if (diff< 0) sharpNotater = ".";
+
+        String key = 1+ "" + Math.abs(diff) + sharpNotater;
+
+        if(mapOfTrochees.get(key) == null){
+            mapOfTrochees.put(key,1);
+        }else{
+            mapOfTrochees.put(key,mapOfTrochees.get(key)+1);
+        }
+
+    }
+
+    public void DactylCheck(ArrayList<MidiNote> quarter){
+        int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note());
+        int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note());
+        String sharpNotater1 = "";
+        String sharpNotater2= "";
+        if (diff1< 0) sharpNotater1 = ".";
+        if (diff2< 0) sharpNotater2 = ".";
+
+        String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
+
+        if(mapOfDactyles.get(key) == null){
+            mapOfDactyles.put(key,1);
+        }else{
+            mapOfDactyles.put(key,mapOfDactyles.get(key)+1);
+        }
+
+    }
+
+    public int halfToneToTone(int firstNote, int secondNote){
+        int halfToneDifference = secondNote-firstNote;
+        int toneDifference = 1;
+        switch(Math.abs(halfToneDifference)){
+            case 0: toneDifference = 1; break;
+            case 1: toneDifference = 2; break;
+            case 2: toneDifference = 2; break;
+            case 3: toneDifference = 3; break;
+            case 4: toneDifference = 3; break;
+            case 5: toneDifference = 4; break;
+            case 6: toneDifference = 5; break;
+            case 7: toneDifference = 5; break;
+            case 8: toneDifference = 6; break;
+            case 9: toneDifference = 6; break;
+            case 10: toneDifference = 7; break;
+            case 11: toneDifference = 7; break;
+            case 12: toneDifference = 8; break;
+            default: toneDifference = 1; break;
+        }
+
+        if(halfToneDifference < 0){
+            return -toneDifference;
+        }else{
+            return toneDifference;
+        }
     }
 
     public void clearAnalytics(){
@@ -184,12 +261,12 @@ public class MidiLoader{
         return listOfRhythms;
     }
 
-    public ArrayList<Integer> listOfTrochees(){
-        return listOfTrochees;
+    public HashMap<String,Integer> mapOfTrochees(){
+        return mapOfTrochees;
     }
 
-    public ArrayList<Integer> listOfDactyles(){
-        return listOfDactyles;
+    public HashMap<String,Integer> mapOfDactyles(){
+        return mapOfDactyles;
     }
 
 

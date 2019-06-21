@@ -14,6 +14,8 @@ public class Model{
     MidiLoader midiLoader;
     ArrayList<Integer> toneList;
     ArrayList<Integer> rhythmList;
+    HashMap<String, Integer> mapOfTrochees;
+    HashMap<String, Integer> mapOfDactyles;
     View view;
 
     public Model(View view){
@@ -22,8 +24,9 @@ public class Model{
         for(int i = 0; i < 12; i++) toneList.add(0);
         rhythmList = new ArrayList<Integer>();
         for(int i = 0; i < 10; i++) rhythmList.add(0);
-
-        midiLoader = new MidiLoader(toneList, rhythmList);
+        mapOfTrochees = new HashMap<String, Integer>();
+        mapOfDactyles = new HashMap<String, Integer>();
+        midiLoader = new MidiLoader(toneList, rhythmList, mapOfTrochees, mapOfDactyles);
     }
 
 
@@ -35,7 +38,9 @@ public class Model{
         midiLoader.countAll();
         toneList = midiLoader.listOfTones();
         rhythmList = midiLoader.listOfRhythms();
-        view.updateGrids(toneList,rhythmList);
+        mapOfTrochees = midiLoader.mapOfTrochees();
+        mapOfDactyles = midiLoader.mapOfDactyles();
+        view.updateGrids(toneList, rhythmList, mapOfTrochees, mapOfDactyles);
     }
 
     public ArrayList<Integer> getToneList(){
