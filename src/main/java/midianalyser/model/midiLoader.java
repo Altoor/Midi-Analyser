@@ -69,6 +69,9 @@ public class MidiLoader{
             long currQuarterTick =0; // round down to nearest tick representing a quarter
             int keySig = 0;
             boolean majorKey = true;
+            int timeSigNumerator = 4;
+            int timeSigDenominator = 4;
+
 
             for (Track track :  sequence.getTracks()) {
                 trackNumber++;
@@ -140,6 +143,10 @@ public class MidiLoader{
                             tempo = out;
 
                         }else if(type == MidiEventType.TIME_SIGNATURE.type()){
+                            timeSigNumerator = mm.getData()[0];
+                            timeSigDenominator = (int) Math.pow(2,mm.getData()[1]);
+                            if(timeSigDenominator == 8) PPQ = (int) Math.round(PPQ* 1.5);
+                            System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
                             keySig = mm.getData()[0];
