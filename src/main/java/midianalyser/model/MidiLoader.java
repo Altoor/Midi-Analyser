@@ -2,9 +2,7 @@ package midianalyser.model;
 
 import java.io.File;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 import java.lang.Math;
 
@@ -74,6 +72,7 @@ public class MidiLoader{
             int tempo = 500000;
             int PPQ = sequence.getResolution();
             long currQuarterTick =0; // round down to nearest tick representing a quarter
+            long currTick =0; // The tick of the last played note.
             int keySig = 0;
             boolean majorKey = true;
             int timeSigNumerator = 4;
@@ -84,10 +83,12 @@ public class MidiLoader{
                 trackNumber++;
                 ArrayList<MidiNote> simulNotes = new ArrayList<MidiNote>();
                 ArrayList<MidiNote> quarter = new ArrayList<MidiNote>();
+                ArrayList<MidiEvent> events = sortTrack(track);
 
-                for (int i=0; i < track.size(); i++) {
-                    MidiEvent event = track.get(i);
+                for (int i=0; i < events.size(); i++) {
+                    MidiEvent event = events.get(i);
                     MidiMessage message = event.getMessage();
+                    System.out.print(" @" + event.getTick());
 
                     if (message instanceof ShortMessage) {
                         ShortMessage sm = (ShortMessage) message;
@@ -100,6 +101,7 @@ public class MidiLoader{
                                 currQuarterTick = event.getTick()-(event.getTick() % PPQ);
 
                                 Collections.sort(quarter, new SortByStartTick());
+                                System.out.println("notes in quarter: " +quarter.size());
                                 rhythmCheck(quarter);
                                 if(quarter.size() ==2){
                                     TrochaicCheck(quarter);
@@ -129,6 +131,7 @@ public class MidiLoader{
                                             break;
                                         }
                                     }
+                                    System.out.println("length" + simulNotes.get(n).length());
                                     simulNotes.remove(n);
                                 }
                             }
@@ -137,7 +140,8 @@ public class MidiLoader{
                     }else if(message instanceof MetaMessage) {
                         MetaMessage mm = (MetaMessage) message;
                         int type = mm.getType();
-                        //System.out.println(type);
+
+                        System.out.println(type);
 
                         if(type == MidiEventType.TRACKNAME.type()){
 
@@ -170,7 +174,19 @@ public class MidiLoader{
         return listOfTones;
     }
 
+    public ArrayList<MidiEvent> sortTrack(Track track){
+        ArrayList<MidiEvent> eventlist = new ArrayList();
+        for (int i=0; i < track.size(); i++) {
+            eventlist.add(track.get(i));
+        }
+
+        Collections.sort(eventlist, new SortEventByTick());
+
+        return eventlist;
+    }
+
     public void rhythmCheck(ArrayList<MidiNote> quarter){
+
         switch(quarter.size()){
             case 1:
                 listOfRhythms.set(0,listOfRhythms.get(0)+1);
@@ -301,4 +317,11 @@ public class MidiLoader{
     }
 
 
+}
+
+class SortEventByTick implements Comparator<MidiEvent>{
+
+        public int compare(MidiEvent a, MidiEvent b){
+            return (int) (a.getTick()-b.getTick());
+        }
 }
