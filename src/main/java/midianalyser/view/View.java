@@ -19,6 +19,8 @@ import java.io.IOException;
 public class View {
 	private GridPane toneTable;
 	private GridPane rhythmTable;
+	private GridPane rhythmTable1;
+	private GridPane rhythmTable2;
 	private GridPane trochaicTable;
 	private GridPane dactylTable;
 
@@ -27,6 +29,8 @@ public class View {
 		controller.setStage(primaryStage);
 		this.toneTable = controller.getToneTable();
 		this.rhythmTable = controller.getRhythmTable();
+		this.rhythmTable1 = controller.getRhythmTable1();
+		this.rhythmTable2 = controller.getRhythmTable2();
 		this.trochaicTable = controller.getTrochaicTable();
 		this.dactylTable = controller.getDactylTable();
 		primaryStage.show();
@@ -53,11 +57,24 @@ public class View {
 
 		//rhytmTable
 		rhythmTable.getChildren().clear();
+		rhythmTable1.getChildren().clear();
+		rhythmTable2.getChildren().clear();
 		for(int i = 0; i < 10; i++){
 
 			text = new Text("" +rhythmList.get(i));
 			rhythmTable.setConstraints(text, 1, i);
 			rhythmTable.getChildren().add(text);
+
+			text = new Text("" +rhythmList.get(i+10));
+			rhythmTable1.setConstraints(text, 1, i);
+			rhythmTable1.getChildren().add(text);
+
+			if(i+20 < rhythmList.size()){
+				text = new Text("" +rhythmList.get(i+20));
+				rhythmTable2.setConstraints(text, 1, i);
+				rhythmTable2.getChildren().add(text);
+			}
+
 		}
 
 		//rhytmTable

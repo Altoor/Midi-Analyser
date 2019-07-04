@@ -69,18 +69,23 @@ public class MidiLoader{
             }
 
             int trackNumber = 0;
-            int tempo = 500000;
-            int PPQ = sequence.getResolution();
-            long currQuarterTick =0; // round down to nearest tick representing a quarter
-            long currTick =0; // The tick of the last played note.
-            int keySig = 0;
-            boolean majorKey = true;
-            int timeSigNumerator = 4;
-            int timeSigDenominator = 4;
-
+            ArrayList<MidiEvent> metaMessages = new ArrayList();
 
             for (Track track :  sequence.getTracks()) {
+                int tempo = 500000;
+                int PPQ = sequence.getResolution();
+                long currQuarterTick =0; // round down to nearest tick representing a quarter
+                long PPQChangeTick =0; // The tick of the last played note.
+                int keySig = 0;
+                boolean majorKey = true;
+                int timeSigNumerator = 4;
+                int timeSigDenominator = 4;
+
                 trackNumber++;
+                for(MidiEvent me : metaMessages){
+                    track.add(me);
+                }
+
                 ArrayList<MidiNote> simulNotes = new ArrayList<MidiNote>();
                 ArrayList<MidiNote> quarter = new ArrayList<MidiNote>();
                 ArrayList<MidiEvent> events = sortTrack(track);
@@ -97,19 +102,12 @@ public class MidiLoader{
                             int key = sm.getData1();
                             MidiNote note = new MidiNote(key,event.getTick(),keySig);
 
-                            if(event.getTick() >= currQuarterTick + PPQ){
-                                currQuarterTick = event.getTick()-(event.getTick() % PPQ);
-
-                                Collections.sort(quarter, new SortByStartTick());
-                                System.out.println("notes in quarter: " +quarter.size());
-                                rhythmCheck(quarter);
-                                if(quarter.size() ==2){
-                                    TrochaicCheck(quarter);
-                                }else if(quarter.size() ==3){
-                                    DactylCheck(quarter);
-                                }
+                            if(event.getTick() >= currQuarterTick + PPQ ){
+                                currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
+                                checkQuarter(quarter);
                                 quarter.clear();
                             }
+
                             simulNotes.add(note);
                             quarter.add(note);
 
@@ -126,7 +124,7 @@ public class MidiLoader{
                                     System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
                                     for(double l = 1; l < 32; l +=0.5){
-                                        if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/5) && lengthInTicks < (int) (PPQ/l)+((PPQ/l)/5)){
+                                        if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/4) && lengthInTicks <= (int) (PPQ/l)+((PPQ/l)/4)){
                                             simulNotes.get(n).setLength(l);
                                             break;
                                         }
@@ -138,6 +136,7 @@ public class MidiLoader{
 
                         }
                     }else if(message instanceof MetaMessage) {
+                        metaMessages.add(event);
                         MetaMessage mm = (MetaMessage) message;
                         int type = mm.getType();
 
@@ -146,6 +145,7 @@ public class MidiLoader{
                         if(type == MidiEventType.TRACKNAME.type()){
 
                         }else if(type == MidiEventType.END_OF_TRACK.type()){
+                            checkQuarter(quarter);
 
                         }else if(type == MidiEventType.SET_TEMPO.type()){
                             int out = 0;
@@ -160,11 +160,16 @@ public class MidiLoader{
                             timeSigDenominator = (int) Math.pow(2,mm.getData()[1]);
                             if(timeSigDenominator == 8) PPQ = (int) Math.round(PPQ* 1.5);
                             System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
+                            PPQChangeTick = event.getTick();
+                            currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
+                            checkQuarter(quarter);
+
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
                             keySig = mm.getData()[0];
                             if(mm.getData()[1] == 1) majorKey = false;
                             System.out.println("keySig :" +keySig);
+
                         }
 
                     }
@@ -181,8 +186,19 @@ public class MidiLoader{
         }
 
         Collections.sort(eventlist, new SortEventByTick());
-
         return eventlist;
+    }
+
+    public void checkQuarter(ArrayList<MidiNote> quarter){
+        Collections.sort(quarter, new SortByStartTick());
+        System.out.println("notes in quarter: " +quarter.size());
+        rhythmCheck(quarter);
+        if(quarter.size() ==2){
+            TrochaicCheck(quarter);
+        }else if(quarter.size() ==3){
+            DactylCheck(quarter);
+        }
+        quarter.clear();
     }
 
     public void rhythmCheck(ArrayList<MidiNote> quarter){
@@ -194,29 +210,67 @@ public class MidiLoader{
             case 2:
                 if(quarter.get(0).length() == 2.0 && quarter.get(1).length() == 2.0){
                     listOfRhythms.set(1,listOfRhythms.get(1)+1);
-                }else if(quarter.get(0).length() == 1.5 && quarter.get(1).length() == 3.5){
-                    listOfRhythms.set(2,listOfRhythms.get(2)+1);
-                }else if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 1.5){
-                    listOfRhythms.set(3,listOfRhythms.get(3)+1);
+                }else if(quarter.get(0).length() == 1.5 && quarter.get(1).length() >= 3.0){
+                    listOfRhythms.set(5,listOfRhythms.get(5)+1);
+                }else if(quarter.get(0).length() >= 3.0 && quarter.get(1).length() == 1.5){
+                    listOfRhythms.set(6,listOfRhythms.get(6)+1);
+                }else if(quarter.get(0).length() == 1.5 && quarter.get(1).length() == 2.5){
+                    listOfRhythms.set(8,listOfRhythms.get(8)+1);
                 }
                 break;
             case 3:
-                if(quarter.get(0).length() == 3.0 && quarter.get(1).length() == 3.0 && quarter.get(2).length() == 3.0){
+                if(quarter.get(0).length() == 2.5 && quarter.get(1).length() == 2.5 && quarter.get(2).length() == 2.5){
+                    listOfRhythms.set(9,listOfRhythms.get(9)+1);
+                }else if(quarter.get(0).length() == 2.0 && quarter.get(1).length() >= 5.0){
+                    listOfRhythms.set(10,listOfRhythms.get(10)+1);
+                }else if(quarter.get(0).length() >= 5.0 && quarter.get(1).length() == 2.0){
+                    listOfRhythms.set(11,listOfRhythms.get(11)+1);
+                }else if(quarter.get(1).length() == 2.0 && quarter.get(2).length() >= 5.0){
+                    listOfRhythms.set(12,listOfRhythms.get(12)+1);
+                }else if(quarter.get(1).length() >= 5.0 && quarter.get(2).length() == 2.0){
+                    listOfRhythms.set(13,listOfRhythms.get(13)+1);
+                }else if(quarter.get(0).length() == 2.0){
+                    listOfRhythms.set(2,listOfRhythms.get(2)+1);
+                }else if(quarter.get(1).length() == 2.0 ){
+                    listOfRhythms.set(3,listOfRhythms.get(3)+1);
+                }else if(quarter.get(2).length() == 2.0){
                     listOfRhythms.set(4,listOfRhythms.get(4)+1);
-                }else if(quarter.get(0).length() == 2.0 && quarter.get(1).length() == 3.5 && quarter.get(2).length() == 3.5){
-                    listOfRhythms.set(5,listOfRhythms.get(5)+1);
-                }else if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 3.5 && quarter.get(2).length() == 2.0){
-                    listOfRhythms.set(6,listOfRhythms.get(6)+1);
-                }else if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 2.0 && quarter.get(2).length() == 3.5){
-                    listOfRhythms.set(6,listOfRhythms.get(6)+1);
                 }
 
                 break;
             case 4:
-                listOfRhythms.set(8,listOfRhythms.get(8)+1);
+                if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 3.5 && quarter.get(2).length() == 3.5 && quarter.get(3).length() == 3.5){
+                    listOfRhythms.set(7,listOfRhythms.get(7)+1);
+                }else if( quarter.get(2).length() == 2.5 && quarter.get(3).length() == 2.5){
+                    listOfRhythms.set(14,listOfRhythms.get(14)+1);
+                }else if( quarter.get(2).length() == 2.0){
+                    listOfRhythms.set(15,listOfRhythms.get(15)+1);
+                }else if( quarter.get(3).length() == 2.0){
+                    listOfRhythms.set(16,listOfRhythms.get(16)+1);
+                }else if( quarter.get(0).length() == 2.5 && quarter.get(3).length() == 2.5){
+                    listOfRhythms.set(19,listOfRhythms.get(19)+1);
+                }else if( quarter.get(0).length() == 2.5 && quarter.get(1).length() == 2.5){
+                    listOfRhythms.set(21,listOfRhythms.get(21)+1);
+                }else if( quarter.get(0).length() == 2.0 ){
+                    listOfRhythms.set(22,listOfRhythms.get(22)+1);
+                }else if( quarter.get(1).length() == 2.0){
+                    listOfRhythms.set(23,listOfRhythms.get(23)+1);
+                }
+
+                break;
+
+            case 5:
+                if(quarter.get(4).length() == 2.5){
+                    listOfRhythms.set(17,listOfRhythms.get(17)+1);
+                }else if(quarter.get(0).length() == 2.5){
+                    listOfRhythms.set(20,listOfRhythms.get(20)+1);
+                }
+                break;
+
+            case 6:
+                listOfRhythms.set(18,listOfRhythms.get(18)+1);
                 break;
             default:
-                listOfRhythms.set(9,listOfRhythms.get(9)+1);
         }
 
     }
@@ -322,6 +376,12 @@ public class MidiLoader{
 class SortEventByTick implements Comparator<MidiEvent>{
 
         public int compare(MidiEvent a, MidiEvent b){
-            return (int) (a.getTick()-b.getTick());
+            int out = 0;
+            if(a.getTick() < b.getTick()){
+                out = -1;
+            }else if(a.getTick() > b.getTick()){
+                out = 1;
+            }
+            return out;
         }
 }

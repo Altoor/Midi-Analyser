@@ -37,6 +37,12 @@ public class Controller {
     private GridPane rhythmTable;
 
     @FXML
+    private GridPane rhythmTable1;
+
+    @FXML
+    private GridPane rhythmTable2;
+
+    @FXML
     private GridPane trochaicTable;
 
     @FXML
@@ -93,6 +99,12 @@ public class Controller {
 
     public GridPane getRhythmTable(){
         return rhythmTable;
+    }
+    public GridPane getRhythmTable1(){
+        return rhythmTable1;
+    }
+    public GridPane getRhythmTable2(){
+        return rhythmTable2;
     }
 
     public GridPane getTrochaicTable(){
