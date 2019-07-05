@@ -144,6 +144,7 @@ public class MidiLoader{
                                     for(double l = 1; l < 32; l +=0.5){
                                         if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/5) && lengthInTicks <= (int) (PPQ/l)+((PPQ/l)/5)){
                                             simulNotes.get(n).setLength(l);
+                                            break;
                                         }
                                     }
                                     System.out.println("length" + simulNotes.get(n).length());
