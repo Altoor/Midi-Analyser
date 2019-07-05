@@ -144,7 +144,6 @@ public class MidiLoader{
                                     for(double l = 1; l < 32; l +=0.5){
                                         if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/5) && lengthInTicks <= (int) (PPQ/l)+((PPQ/l)/5)){
                                             simulNotes.get(n).setLength(l);
-                                            break;
                                         }
                                     }
                                     System.out.println("length" + simulNotes.get(n).length());
@@ -311,9 +310,9 @@ public class MidiLoader{
                 break;
 
             case 5:
-                if(quarter.get(4).length() == 2.5){
+                if(quarter.get(4).length() <= 3.5){
                     listOfRhythms.set(17,listOfRhythms.get(17)+1);
-                }else if(quarter.get(0).length() == 2.5){
+                }else if(quarter.get(0).length() <= 3.5){
                     listOfRhythms.set(20,listOfRhythms.get(20)+1);
                 }
                 break;
@@ -327,7 +326,7 @@ public class MidiLoader{
     }
 
     public void TrochaicCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
-        int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note());
+        int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
 
@@ -335,23 +334,23 @@ public class MidiLoader{
 
         if(mapOfTrochees.get(key) == null){
             HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
-            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)), 1);
+            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey), 1);
             mapOfTrochees.put(key,newHM);
 
         }else{
             int count = 0;
-            if(mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey))) != null){
-                count = mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)));
+            if(mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)) != null){
+                count = mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey));
             }
 
-            mapOfTrochees.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)),count+1);
+            mapOfTrochees.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey),count+1);
         }
 
     }
 
     public void DactylCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
-        int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note());
-        int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note());
+        int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
+        int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note(), keySig, majorKey);
         String sharpNotater1 = "";
         String sharpNotater2= "";
         if (diff1< 0) sharpNotater1 = ".";
@@ -361,17 +360,17 @@ public class MidiLoader{
 
         if(mapOfDactyles.get(key) == null){
             HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
-            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)), 1);
+            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey), 1);
 
             mapOfDactyles.put(key,newHM);
         }else{
 
             int count = 0;
-            if(mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey))) != null){
-                count = mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)));
+            if(mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)) != null){
+                count = mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey));
             }
 
-            mapOfDactyles.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)),count+1);
+            mapOfDactyles.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey),count+1);
         }
 
     }
@@ -450,31 +449,49 @@ public class MidiLoader{
 
 
 
-    public int halfToneToTone(int firstNote, int secondNote){
-        int halfToneDifference = secondNote-firstNote;
-        int toneDifference = 1;
-        switch(Math.abs(halfToneDifference)){
-            case 0: toneDifference = 1; break;
-            case 1: toneDifference = 2; break;
-            case 2: toneDifference = 2; break;
-            case 3: toneDifference = 3; break;
-            case 4: toneDifference = 3; break;
-            case 5: toneDifference = 4; break;
-            case 6: toneDifference = 5; break;
-            case 7: toneDifference = 5; break;
-            case 8: toneDifference = 6; break;
-            case 9: toneDifference = 6; break;
-            case 10: toneDifference = 7; break;
-            case 11: toneDifference = 7; break;
-            case 12: toneDifference = 8; break;
-            default: toneDifference = 1; break;
+    public int halfToneToTone(int firstNote, int secondNote, int keySig, boolean majorKey){
+        int firstTone = 0;
+        int secondTone = 0;
+
+        switch(keySigCheck(firstNote, keySig, majorKey)){
+            case 0: firstTone = 1; break;
+            case 1: firstTone = 2; break;
+            case 2: firstTone = 2; break;
+            case 3: firstTone = 3; break;
+            case 4: firstTone = 3; break;
+            case 5: firstTone = 4; break;
+            case 6: firstTone = 4; break;
+            case 7: firstTone = 5; break;
+            case 8: firstTone = 6; break;
+            case 9: firstTone = 6; break;
+            case 10: firstTone = 7; break;
+            case 11: firstTone = 7; break;
+            case 12: firstTone = 8; break;
+            default: firstTone = 1; break;
         }
 
-        if(halfToneDifference < 0){
-            return -toneDifference;
-        }else{
-            return toneDifference;
+        firstTone = firstTone + (7 * (int) Math.round((keySigCheck(0, keySig, majorKey)+firstNote)/12));
+
+        switch(keySigCheck(secondNote, keySig, majorKey)){
+            case 0: firstTone = 1; break;
+            case 1: firstTone = 2; break;
+            case 2: firstTone = 2; break;
+            case 3: firstTone = 3; break;
+            case 4: firstTone = 3; break;
+            case 5: firstTone = 4; break;
+            case 6: firstTone = 4; break;
+            case 7: firstTone = 5; break;
+            case 8: firstTone = 6; break;
+            case 9: firstTone = 6; break;
+            case 10: firstTone = 7; break;
+            case 11: firstTone = 7; break;
+            case 12: firstTone = 8; break;
+            default: firstTone = 1; break;
         }
+
+        secondTone = secondTone + (7 * (int) Math.round((keySigCheck(0,keySig, majorKey)+secondNote)/12));
+
+        return (secondTone - firstNote);
     }
 
     public void clearAnalytics(){
