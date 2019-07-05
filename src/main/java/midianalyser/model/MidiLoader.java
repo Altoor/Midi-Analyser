@@ -147,7 +147,7 @@ public class MidiLoader{
                                             break;
                                         }
                                     }
-                                    //System.out.println("length" + simulNotes.get(n).length());
+                                    System.out.println("length" + simulNotes.get(n).length());
                                     simulNotes.remove(n);
                                 }
                             }
