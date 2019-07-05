@@ -397,7 +397,7 @@ public class MidiLoader{
     }
 
     public void addKeySig(int keySig, boolean majorKey){
-        String key = keySigCheck(0,keySig,majorKey);
+        String key = "" +keySigCheck(0,keySig,majorKey);
         if(majorKey){
             key += " major";
         }else{
