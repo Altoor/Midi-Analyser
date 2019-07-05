@@ -104,7 +104,7 @@ public class MidiLoader{
                 for (int i=0; i < events.size(); i++) {
                     MidiEvent event = events.get(i);
                     MidiMessage message = event.getMessage();
-                    System.out.print(" @" + event.getTick());
+                    //System.out.print(" @" + event.getTick());
 
                     if (message instanceof ShortMessage) {
                         ShortMessage sm = (ShortMessage) message;
@@ -138,8 +138,8 @@ public class MidiLoader{
                             for(int n = 0; n < simulNotes.size(); n++){
                                 if(simulNotes.get(n).note() == key){
                                     int lengthInTicks = (int) (event.getTick() - simulNotes.get(n).startTick());
-                                    System.out.println("note: " + key);
-                                    System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
+                                    //System.out.println("note: " + key);
+                                    //System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
                                     for(double l = 1; l < 32; l +=0.5){
                                         if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/4) && lengthInTicks <= (int) (PPQ/l)+((PPQ/l)/4)){
@@ -147,7 +147,7 @@ public class MidiLoader{
                                             break;
                                         }
                                     }
-                                    System.out.println("length" + simulNotes.get(n).length());
+                                    //System.out.println("length" + simulNotes.get(n).length());
                                     simulNotes.remove(n);
                                 }
                             }
