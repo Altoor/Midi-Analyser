@@ -114,7 +114,7 @@ public class MidiLoader{
                             MidiNote note = new MidiNote(key,event.getTick(),keySig);
 
                             if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySig))){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigCheck(0,keySig,majorKey)))){
                                     if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
 
                                         if(event.getTick() >= currQuarterTick + PPQ ){
@@ -182,9 +182,9 @@ public class MidiLoader{
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
                             checkQuarter(quarter, keySig, majorKey);
 
-                            if(metaMessages.contains(event)){
+                            if(! metaMessages.contains(event)){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySig))){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keySigCheck(0,keySig,majorKey))){
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
 
                                             addTimeSig(timeSigNumerator, timeSigDenominator);
@@ -200,9 +200,9 @@ public class MidiLoader{
                             if(mm.getData()[1] == 1) majorKey = false;
                             System.out.println("keySig :" +keySig);
 
-                            if(metaMessages.contains(event)){
+                            if(! metaMessages.contains(event)){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySig))){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keySigCheck(0,keySig,majorKey))){
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
 
                                             addKeySig(keySig, majorKey);
@@ -397,7 +397,7 @@ public class MidiLoader{
     }
 
     public void addKeySig(int keySig, boolean majorKey){
-        String key = keyToString(keySig);
+        String key = keySigCheck(0,keySig,majorKey);
         if(majorKey){
             key += " major";
         }else{
