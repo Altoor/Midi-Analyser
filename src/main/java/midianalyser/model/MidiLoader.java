@@ -108,7 +108,7 @@ public class MidiLoader{
 
                     if (message instanceof ShortMessage) {
                         ShortMessage sm = (ShortMessage) message;
-                        System.out.println(sm.getCommand());
+                        //System.out.println(sm.getCommand());
                         if (sm.getCommand() == NOTE_ON && sm.getData2() != 0) {
                             int key = sm.getData1();
                             MidiNote note = new MidiNote(key,event.getTick(),keySig);
@@ -138,7 +138,7 @@ public class MidiLoader{
                             for(int n = 0; n < simulNotes.size(); n++){
                                 if(simulNotes.get(n).note() == key){
                                     int lengthInTicks = (int) (event.getTick() - simulNotes.get(n).startTick());
-                                    //System.out.println("note: " + key);
+                                    System.out.println("note: " + key);
                                     System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
                                     for(double l = 1; l < 32; l +=0.5){
@@ -177,7 +177,7 @@ public class MidiLoader{
                             timeSigNumerator = mm.getData()[0];
                             timeSigDenominator = (int) Math.pow(2,mm.getData()[1]);
                             if(timeSigDenominator == 8) PPQ = (int) Math.round(PPQ* 1.5);
-                            System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
+                            //System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
                             PPQChangeTick = event.getTick();
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
                             checkQuarter(quarter, keySig, majorKey);
@@ -491,7 +491,7 @@ public class MidiLoader{
         }
 
         secondTone = secondTone + (7 * (int) Math.round((keySigCheck(0,keySig, majorKey)+secondNote)/12));
-
+        System.out.println("first" + firstTone + "second"+secondTone);
         return (secondTone - firstNote);
     }
 
