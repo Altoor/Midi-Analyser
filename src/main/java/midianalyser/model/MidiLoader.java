@@ -139,7 +139,7 @@ public class MidiLoader{
                                 if(simulNotes.get(n).note() == key){
                                     int lengthInTicks = (int) (event.getTick() - simulNotes.get(n).startTick());
                                     //System.out.println("note: " + key);
-                                    //System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
+                                    System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
                                     for(double l = 1; l < 32; l +=0.5){
                                         if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/4) && lengthInTicks <= (int) (PPQ/l)+((PPQ/l)/4)){
@@ -197,8 +197,8 @@ public class MidiLoader{
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
                             keySig = mm.getData()[0];
-                            if(mm.getData()[1] == 1) majorKey = false;
-                            System.out.println("keySig :" +keySig);
+                            if(mm.getData()[1] != 0) majorKey = false;
+                            System.out.println("keySig :" +keySig + "major" + majorKey);
 
                             if(! metaMessages.contains(event)){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
@@ -376,9 +376,9 @@ public class MidiLoader{
 
     }
 
-    public String keyToString(int keySig){
+    public String keyToString(int keyIn){
         String key = "";
-        switch(keySig){
+        switch(keyIn){
             case 0: key = "c"; break;
             case 1: key = "c#"; break;
             case 2: key = "d"; break;
@@ -442,8 +442,8 @@ public class MidiLoader{
         if(!majorKey){
             keyNote = 9;
         }
-        keyNote = (keyNote+(7*keySig)) %12;
-
+        keyNote += (7*keySig) % 12;
+        System.out.println("keynote" + keyNote);
         return keyNote;
 
     }
