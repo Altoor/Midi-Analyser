@@ -19,6 +19,7 @@ import java.io.IOException;
 
 
 import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 
 
 //TODO checkout https://stackoverflow.com/questions/3850688/reading-midi-files-in-java
@@ -31,23 +32,33 @@ public class MidiLoader{
     private Sequence sequence;
     private ArrayList<Integer> listOfTones;
     private ArrayList<Integer> listOfRhythms;
-    private HashMap<String, Integer> mapOfTrochees;
-    private HashMap<String, Integer> mapOfDactyles;
+    private TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees;
+    private TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles;
+    private TreeMap<String, Integer> mapOfKeys;
+    private TreeMap<String, Integer> mapOfTimeSigs;
+
+    private ObservableList<String> filterTimeSig = FXCollections.observableArrayList();
+    private ObservableList<String> filterKeySig = FXCollections.observableArrayList();
+    private ObservableList<String> filterMajorSig = FXCollections.observableArrayList();
 
 
-    public MidiLoader(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, HashMap<String, Integer> mapOfTrochees, HashMap<String, Integer> mapOfDactyles){
+    public MidiLoader(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, TreeMap<String, Integer> mapOfKeys, TreeMap<String, Integer> mapOfTimeSigs){
         this.listOfTones = listOfTones;
         this.listOfRhythms = listOfRhythms;
         this.mapOfTrochees = mapOfTrochees;
         this.mapOfDactyles = mapOfDactyles;
+        this.mapOfKeys = mapOfKeys;
+        this.mapOfTimeSigs = mapOfTimeSigs;
 
     }
 
-    public void setLists(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, HashMap<String, Integer> mapOfTrochees, HashMap<String, Integer> mapOfDactyles){
+    public void setLists(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, TreeMap<String, Integer> mapOfKeys, TreeMap<String, Integer> mapOfTimeSigs){
         this.listOfTones = listOfTones;
         this.listOfRhythms = listOfRhythms;
         this.mapOfTrochees = mapOfTrochees;
         this.mapOfDactyles = mapOfDactyles;
+        this.mapOfKeys = mapOfKeys;
+        this.mapOfTimeSigs = mapOfTimeSigs;
     }
 
     public void setDirectory(File midiDirectory) throws IOException{
@@ -59,7 +70,7 @@ public class MidiLoader{
         clearAnalytics();
     }
 
-    public ArrayList<Integer> countAll(){
+    public void countAll(){
         for(File file : midiFiles){
             try{
                 sequence = MidiSystem.getSequence(file);
@@ -102,18 +113,25 @@ public class MidiLoader{
                             int key = sm.getData1();
                             MidiNote note = new MidiNote(key,event.getTick(),keySig);
 
-                            if(event.getTick() >= currQuarterTick + PPQ ){
-                                currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
-                                checkQuarter(quarter);
-                                quarter.clear();
+                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySig))){
+                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+
+                                        if(event.getTick() >= currQuarterTick + PPQ ){
+                                            currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
+                                            checkQuarter(quarter, keySig, majorKey);
+                                            quarter.clear();
+                                        }
+
+                                    }
+                                }
                             }
+
+
 
                             simulNotes.add(note);
                             quarter.add(note);
 
-                            int noteFromKey = keySigCheck(note.note(), keySig, majorKey);
-
-                            listOfTones.set(noteFromKey,listOfTones.get(noteFromKey)+1);
                         } else if (sm.getCommand() == NOTE_OFF || sm.getCommand() == NOTE_ON && sm.getData2() == 0) {
                             int key = sm.getData1();
 
@@ -145,7 +163,7 @@ public class MidiLoader{
                         if(type == MidiEventType.TRACKNAME.type()){
 
                         }else if(type == MidiEventType.END_OF_TRACK.type()){
-                            checkQuarter(quarter);
+                            checkQuarter(quarter, keySig, majorKey);
 
                         }else if(type == MidiEventType.SET_TEMPO.type()){
                             int out = 0;
@@ -162,13 +180,38 @@ public class MidiLoader{
                             System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
                             PPQChangeTick = event.getTick();
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
-                            checkQuarter(quarter);
+                            checkQuarter(quarter, keySig, majorKey);
 
+                            if(metaMessages.contains(event)){
+                                if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySig))){
+                                        if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+
+                                            addTimeSig(timeSigNumerator, timeSigDenominator);
+
+                                        }
+                                    }
+                                }
+
+                            }
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
                             keySig = mm.getData()[0];
                             if(mm.getData()[1] == 1) majorKey = false;
                             System.out.println("keySig :" +keySig);
+
+                            if(metaMessages.contains(event)){
+                                if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySig))){
+                                        if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+
+                                            addKeySig(keySig, majorKey);
+                                        }
+
+                                    }
+                                }
+
+                            }
 
                         }
 
@@ -176,7 +219,6 @@ public class MidiLoader{
                 }
             }
         }
-        return listOfTones;
     }
 
     public ArrayList<MidiEvent> sortTrack(Track track){
@@ -189,16 +231,24 @@ public class MidiLoader{
         return eventlist;
     }
 
-    public void checkQuarter(ArrayList<MidiNote> quarter){
+    public void checkQuarter(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         Collections.sort(quarter, new SortByStartTick());
         System.out.println("notes in quarter: " +quarter.size());
         rhythmCheck(quarter);
         if(quarter.size() ==2){
-            TrochaicCheck(quarter);
+            TrochaicCheck(quarter, keySig, majorKey);
         }else if(quarter.size() ==3){
-            DactylCheck(quarter);
+            DactylCheck(quarter, keySig, majorKey);
         }
+        for(MidiNote note : quarter){
+            int noteFromKey = keySigCheck(note.note(), keySig, majorKey);
+            listOfTones.set(noteFromKey,listOfTones.get(noteFromKey)+1);
+        }
+
+
         quarter.clear();
+
+
     }
 
     public void rhythmCheck(ArrayList<MidiNote> quarter){
@@ -275,7 +325,7 @@ public class MidiLoader{
 
     }
 
-    public void TrochaicCheck(ArrayList<MidiNote> quarter){
+    public void TrochaicCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note());
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
@@ -283,14 +333,22 @@ public class MidiLoader{
         String key = 1+ "" + Math.abs(diff) + sharpNotater;
 
         if(mapOfTrochees.get(key) == null){
-            mapOfTrochees.put(key,1);
+            HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
+            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)), 1);
+            mapOfTrochees.put(key,newHM);
+
         }else{
-            mapOfTrochees.put(key,mapOfTrochees.get(key)+1);
+            int count = 0;
+            if(mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey))) != null){
+                count = mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)));
+            }
+
+            mapOfTrochees.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)),count+1);
         }
 
     }
 
-    public void DactylCheck(ArrayList<MidiNote> quarter){
+    public void DactylCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note());
         int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note());
         String sharpNotater1 = "";
@@ -301,9 +359,64 @@ public class MidiLoader{
         String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
 
         if(mapOfDactyles.get(key) == null){
-            mapOfDactyles.put(key,1);
+            HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
+            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)), 1);
+
+            mapOfDactyles.put(key,newHM);
         }else{
-            mapOfDactyles.put(key,mapOfDactyles.get(key)+1);
+
+            int count = 0;
+            if(mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey))) != null){
+                count = mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)));
+            }
+
+            mapOfDactyles.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey)),count+1);
+        }
+
+    }
+
+    public String keyToString(int keySig){
+        String key = "";
+        switch(keySig){
+            case 0: key = "c"; break;
+            case 1: key = "c#"; break;
+            case 2: key = "d"; break;
+            case 3: key = "d#"; break;
+            case 4: key = "e"; break;
+            case 5: key = "f"; break;
+            case 6: key = "f#"; break;
+            case 7: key = "g"; break;
+            case 8: key = "g#"; break;
+            case 9: key = "a"; break;
+            case 10: key = "a#"; break;
+            case 11: key = "b"; break;
+            case 12: key = "c"; break;
+            default: key = "c"; break;
+        }
+        return key;
+    }
+
+    public void addKeySig(int keySig, boolean majorKey){
+        String key = keyToString(keySig);
+        if(majorKey){
+            key += " major";
+        }else{
+            key += " minor";
+        }
+
+        if(mapOfKeys.get(key) == null){
+            mapOfKeys.put(key,1);
+        }else{
+            mapOfKeys.put(key,mapOfKeys.get(key)+1);
+        }
+    }
+
+    public void addTimeSig(int timeSigNumerator, int timeSigDenominator){
+        String key = timeSigNumerator + "/" + timeSigDenominator;
+        if(mapOfTimeSigs.get(key) == null){
+            mapOfTimeSigs.put(key,1);
+        }else{
+            mapOfTimeSigs.put(key,mapOfTimeSigs.get(key)+1);
         }
 
     }
@@ -362,12 +475,32 @@ public class MidiLoader{
         return listOfRhythms;
     }
 
-    public HashMap<String,Integer> mapOfTrochees(){
+    public TreeMap<String,HashMap<Integer, Integer>> mapOfTrochees(){
         return mapOfTrochees;
     }
 
-    public HashMap<String,Integer> mapOfDactyles(){
+    public TreeMap<String,HashMap<Integer, Integer>> mapOfDactyles(){
         return mapOfDactyles;
+    }
+
+    public TreeMap<String, Integer> mapOfKeys(){
+        return mapOfKeys;
+    }
+
+    public TreeMap<String, Integer> mapOfTimeSigs(){
+        return mapOfTimeSigs;
+    }
+
+    public void filterTimeSig(ObservableList<String> items){
+        this.filterTimeSig = items;
+    }
+
+    public void filterKeySig(ObservableList<String> items){
+        this.filterKeySig = items;
+    }
+
+    public void filterMajorSig(ObservableList<String> items){
+        this.filterMajorSig = items;
     }
 
 

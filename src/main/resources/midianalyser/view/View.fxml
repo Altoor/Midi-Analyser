@@ -21,8 +21,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="midianalyser.Controller">
+<VBox prefHeight="864.0" prefWidth="900.0" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="midianalyser.Controller">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -64,7 +65,7 @@
     </MenuBar>
     <SplitPane dividerPositions="0.2" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
-        <AnchorPane>
+        <AnchorPane prefHeight="603.0" prefWidth="176.0">
           <children>
             <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Functions" textAlignment="CENTER" wrapText="false">
               <font>
@@ -75,6 +76,33 @@
               </textFill>
             </Label>
                   <Button layoutX="33.0" layoutY="41.0" mnemonicParsing="false" onAction="#onToneButton" prefHeight="53.0" prefWidth="105.0" text="Calculate Tone" />
+                  <CheckComboBox fx:id="timeFilter" layoutX="9.0" layoutY="130.0" prefHeight="28.0" prefWidth="164.0" />
+                  <CheckComboBox fx:id="keyFilter" layoutX="6.0" layoutY="193.0" prefHeight="28.0" prefWidth="164.0" />
+                  <CheckComboBox fx:id="majorFilter" layoutX="6.0" layoutY="257.0" prefHeight="28.0" prefWidth="164.0" AnchorPane.rightAnchor="6.0" />
+                  <Label alignment="CENTER" layoutX="47.0" layoutY="103.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Time Sig" textAlignment="CENTER" wrapText="false">
+                     <font>
+                        <Font size="18.0" fx:id="x12" />
+                     </font>
+                     <textFill>
+                        <Color blue="0.624" green="0.624" red="0.624" fx:id="x22" />
+                     </textFill>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="51.0" layoutY="166.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Key" textAlignment="CENTER" wrapText="false">
+                     <font>
+                        <Font size="18.0" fx:id="x121" />
+                     </font>
+                     <textFill>
+                        <Color blue="0.624" green="0.624" red="0.624" fx:id="x221" />
+                     </textFill>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="31.0" layoutY="230.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Major/Minor" textAlignment="CENTER" wrapText="false">
+                     <font>
+                        <Font size="18.0" fx:id="x1211" />
+                     </font>
+                     <textFill>
+                        <Color blue="0.624" green="0.624" red="0.624" fx:id="x2211" />
+                     </textFill>
+                  </Label>
           </children>
         </AnchorPane>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
@@ -83,9 +111,20 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <GridPane fx:id="toneTable" alignment="CENTER" layoutX="257.0" layoutY="213.0" prefHeight="22.0" prefWidth="0.0">
+                              <GridPane fx:id="toneTable" alignment="CENTER" layoutX="106.0" layoutY="199.0" prefHeight="140.0" prefWidth="502.0">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
                                 </columnConstraints>
                                 <rowConstraints>
@@ -341,7 +380,243 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <GridPane fx:id="trochaicTable" alignment="CENTER" layoutX="257.0" layoutY="213.0" prefHeight="0.0" prefWidth="0.0">
+                              <GridPane fx:id="trochaicTable" alignment="CENTER" layoutX="197.0" layoutY="66.0" prefHeight="81.0" prefWidth="321.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                              </GridPane>
+                              <GridPane alignment="CENTER" layoutX="197.0" layoutY="26.0" prefHeight="40.0" prefWidth="321.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="38.0" minWidth="-Infinity" prefWidth="38.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="42.0" minWidth="-Infinity" prefWidth="33.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="33.0" minWidth="6.0" prefWidth="33.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="36.0" minWidth="17.0" prefWidth="29.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="47.0" minWidth="19.0" prefWidth="30.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="57.0" minWidth="27.0" prefWidth="27.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="47.0" minWidth="31.0" prefWidth="31.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="44.0" minWidth="22.0" prefWidth="27.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="41.0" minWidth="15.0" prefWidth="15.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="52.0" minWidth="20.0" prefWidth="52.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="1" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="16.0" style="&#10;" text="2" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="2">
+                                       <font>
+                                          <Font size="18.0" fx:id="x111" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x211" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="3" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="3">
+                                       <font>
+                                          <Font size="18.0" fx:id="x1111" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x2111" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="4" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="4">
+                                       <font>
+                                          <Font size="18.0" fx:id="x1112" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x2112" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="5" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="5">
+                                       <font>
+                                          <Font size="18.0" fx:id="x1113" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x2113" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="6" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="6">
+                                       <font>
+                                          <Font size="18.0" fx:id="x1114" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x2114" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="7" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="7">
+                                       <font>
+                                          <Font size="18.0" fx:id="x1115" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x2115" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="43.0" style="&#10;" text="Total" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="9">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11141" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21141" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="44.0" style="&#10;" text="Mov" textAlignment="CENTER" wrapText="false">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11142" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21142" />
+                                       </textFill>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                </Tab>
+                  <Tab text="Dactyl">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <GridPane fx:id="dactylTable" alignment="CENTER" layoutX="197.0" layoutY="63.0" prefHeight="81.0" prefWidth="321.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                              </GridPane>
+                              <GridPane alignment="CENTER" layoutX="197.0" layoutY="23.0" prefHeight="40.0" prefWidth="321.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="38.0" minWidth="-Infinity" prefWidth="38.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="42.0" minWidth="-Infinity" prefWidth="33.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="33.0" minWidth="6.0" prefWidth="33.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="36.0" minWidth="17.0" prefWidth="29.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="47.0" minWidth="19.0" prefWidth="30.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="57.0" minWidth="27.0" prefWidth="27.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="47.0" minWidth="31.0" prefWidth="31.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="44.0" minWidth="22.0" prefWidth="27.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="41.0" minWidth="15.0" prefWidth="15.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="52.0" minWidth="20.0" prefWidth="52.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="1" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="18.0" fx:id="x111" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x211" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="16.0" style="&#10;" text="2" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="2">
+                                       <font>
+                                          <Font size="18.0" fx:id="x1111" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x2111" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="3" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="3">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11111" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21111" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="4" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="4">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11121" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21121" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="5" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="5">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11131" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21131" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="6" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="6">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11141" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21141" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="20.0" style="&#10;" text="7" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="7">
+                                       <font>
+                                          <Font size="18.0" fx:id="x11151" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x21151" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="43.0" style="&#10;" text="Total" textAlignment="CENTER" wrapText="false" GridPane.columnIndex="9">
+                                       <font>
+                                          <Font size="18.0" fx:id="x111411" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x211411" />
+                                       </textFill>
+                                    </Label>
+                                    <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="44.0" style="&#10;" text="Mov" textAlignment="CENTER" wrapText="false">
+                                       <font>
+                                          <Font size="18.0" fx:id="x111421" />
+                                       </font>
+                                       <textFill>
+                                          <Color blue="0.624" green="0.624" red="0.624" fx:id="x211421" />
+                                       </textFill>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Key">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <GridPane fx:id="keyTable" alignment="CENTER" layoutX="197.0" layoutY="38.0" prefHeight="81.0" prefWidth="321.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
@@ -355,12 +630,12 @@
                            </children>
                         </AnchorPane>
                      </content>
-                </Tab>
-                  <Tab text="Dactyl">
+                  </Tab>
+                  <Tab text="Time sig">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <GridPane fx:id="dactylTable" alignment="CENTER" layoutX="105.0" layoutY="2.0" prefHeight="29.0" prefWidth="1.0">
+                              <GridPane fx:id="timeSigTable" alignment="CENTER" layoutX="197.0" layoutY="30.0" prefHeight="81.0" prefWidth="321.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />

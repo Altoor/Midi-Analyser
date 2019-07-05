@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.collections.*;
 
 import javafx.stage.DirectoryChooser;
 import javax.xml.stream.XMLStreamException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.File;
 import static javafx.scene.input.KeyCode.V;
 
+import org.controlsfx.control.*;
 
 public class Controller {
     private Model model;
@@ -49,6 +51,24 @@ public class Controller {
     private GridPane dactylTable;
 
     @FXML
+    private GridPane keyTable;
+
+    @FXML
+    private GridPane timeSigTable;
+
+    @FXML
+    private GridPane majorTable;
+
+    @FXML
+    private CheckComboBox<String> timeFilter;
+
+    @FXML
+    private CheckComboBox<String> keyFilter;
+
+    @FXML
+    private CheckComboBox<String> majorFilter;
+
+    @FXML
     private Font x3;
 
     @FXML
@@ -58,7 +78,66 @@ public class Controller {
      *
      */
     public void init(Model model) {
+        // create the data to show in the CheckComboBox
+        ObservableList<String> filterTimeSig = FXCollections.observableArrayList();
+        for (int i = 1; i <= 6; i++) {
+            filterTimeSig.add(i + "/" + 4);
+        }
+        for (int i = 3; i <= 12; i += 3) {
+            filterTimeSig.add(i + "/" + 8);
+        }
+        timeFilter.getItems().addAll(filterTimeSig);
+
+        ObservableList<String> filterKeySig = FXCollections.observableArrayList();
+        filterKeySig.add("c");
+        filterKeySig.add("c#");
+        filterKeySig.add("d");
+        filterKeySig.add("d#");
+        filterKeySig.add("e");
+        filterKeySig.add("f");
+        filterKeySig.add("f#");
+        filterKeySig.add("g");
+        filterKeySig.add("g#");
+        filterKeySig.add("a");
+        filterKeySig.add("a#");
+        filterKeySig.add("b");
+
+        keyFilter.getItems().addAll(filterKeySig);
+
+        ObservableList<String> filterMajorSig = FXCollections.observableArrayList();
+        filterMajorSig.add("major");
+        filterMajorSig.add("minor");
+
+        majorFilter.getItems().addAll(filterMajorSig);
+
         this.model = model;
+
+
+
+        timeFilter.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+
+                ObservableList<String> selectedItems = timeFilter.getCheckModel().getCheckedItems();
+                model.filterTimeSig(selectedItems);
+         }
+        });
+
+        keyFilter.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+
+                ObservableList<String> selectedItems = keyFilter.getCheckModel().getCheckedItems();
+                model.filterKeySig(selectedItems);
+            }
+        });
+
+        majorFilter.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+
+                ObservableList<String> selectedItems = majorFilter.getCheckModel().getCheckedItems();
+
+                model.filterMajorSig(selectedItems);
+            }
+        });
     }
 
     @FXML
@@ -113,5 +192,13 @@ public class Controller {
 
     public GridPane getDactylTable(){
         return dactylTable;
+    }
+
+    public GridPane getKeyTable(){
+        return keyTable;
+    }
+
+    public GridPane getTimeSigTable(){
+        return timeSigTable;
     }
 }

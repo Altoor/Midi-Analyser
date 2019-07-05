@@ -23,6 +23,8 @@ public class View {
 	private GridPane rhythmTable2;
 	private GridPane trochaicTable;
 	private GridPane dactylTable;
+	private GridPane keyTable;
+	private GridPane timeSigTable;
 
 
 	public View(Controller controller, Stage primaryStage) throws IOException {
@@ -33,10 +35,12 @@ public class View {
 		this.rhythmTable2 = controller.getRhythmTable2();
 		this.trochaicTable = controller.getTrochaicTable();
 		this.dactylTable = controller.getDactylTable();
+		this.keyTable = controller.getKeyTable();
+		this.timeSigTable = controller.getTimeSigTable();
 		primaryStage.show();
 	}
 
-	public void updateGrids(ArrayList<Integer> toneList, ArrayList<Integer> rhythmList, HashMap<String, Integer> mapOfTrochees, HashMap<String, Integer> mapOfDactyles){
+	public void updateGrids(ArrayList<Integer> toneList, ArrayList<Integer> rhythmList, TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, TreeMap<String, Integer> mapOfKeys, TreeMap<String, Integer> mapOfTimeSigs){
 		Text text = new Text();
 		text.setTextAlignment(TextAlignment.CENTER);
 
@@ -80,29 +84,70 @@ public class View {
 		//rhytmTable
 		trochaicTable.getChildren().clear();
 		int q = 0;
-		for (Map.Entry<String, Integer> entry : mapOfTrochees.entrySet()) {
-
+		for (Map.Entry<String, HashMap<Integer, Integer>> entry : mapOfTrochees.entrySet()) {
 			text = new Text(entry.getKey());
 			trochaicTable.setConstraints(text, 0, q);
 			trochaicTable.getChildren().add(text);
+			int total = 0;
+			for(int i = 1; i < 8; i++){
+				int entryText = 0;
+				if(entry.getValue().get(i) != null) entryText = entry.getValue().get(i);
+				text = new Text("" + entryText);
+				trochaicTable.setConstraints(text, i, q);
+				trochaicTable.getChildren().add(text);
+				total += entryText;
+			}
 
-			text = new Text("" +entry.getValue());
-			trochaicTable.setConstraints(text, 1, q);
+			text = new Text("" + total);
+			trochaicTable.setConstraints(text, 9, q);
 			trochaicTable.getChildren().add(text);
 			q++;
 		}
 
 		dactylTable.getChildren().clear();
 		q = 0;
-		for (Map.Entry<String, Integer> entry : mapOfDactyles.entrySet()) {
-			System.out.println(entry.getKey());
+		for (Map.Entry<String, HashMap<Integer, Integer>> entry : mapOfDactyles.entrySet()) {
 			text = new Text(entry.getKey());
 			dactylTable.setConstraints(text, 0, q);
 			dactylTable.getChildren().add(text);
-
-			text = new Text("" +entry.getValue());
-			dactylTable.setConstraints(text, 1, q);
+			int total = 0;
+			for(int i = 1; i < 8; i++){
+				int entryText = 0;
+				if(entry.getValue().get(i) != null) entryText = entry.getValue().get(i);
+				text = new Text("" + entryText);
+				dactylTable.setConstraints(text, i, q);
+				dactylTable.getChildren().add(text);
+				total += entryText;
+			}
+			text = new Text("" + total);
+			dactylTable.setConstraints(text, 9, q);
 			dactylTable.getChildren().add(text);
+			q++;
+		}
+
+		keyTable.getChildren().clear();
+		q = 0;
+		for (Map.Entry<String, Integer> entry : mapOfKeys.entrySet()) {
+			text = new Text(entry.getKey());
+			keyTable.setConstraints(text, 0, q);
+			keyTable.getChildren().add(text);
+
+			text = new Text("" + entry.getValue());
+			keyTable.setConstraints(text, 1, q);
+			keyTable.getChildren().add(text);
+			q++;
+		}
+
+		timeSigTable.getChildren().clear();
+		q = 0;
+		for (Map.Entry<String, Integer> entry : mapOfTimeSigs.entrySet()) {
+			text = new Text(entry.getKey());
+			timeSigTable.setConstraints(text, 0, q);
+			timeSigTable.getChildren().add(text);
+
+			text = new Text("" + entry.getValue());
+			timeSigTable.setConstraints(text, 1, q);
+			timeSigTable.getChildren().add(text);
 			q++;
 		}
 
