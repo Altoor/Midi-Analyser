@@ -154,7 +154,7 @@ public class MidiLoader{
 
                         }
                     }else if(message instanceof MetaMessage) {
-                        metaMessages.add(event);
+
                         MetaMessage mm = (MetaMessage) message;
                         int type = mm.getType();
 
@@ -214,6 +214,7 @@ public class MidiLoader{
                             }
 
                         }
+                        metaMessages.add(event);
 
                     }
                 }
