@@ -290,30 +290,30 @@ public class MidiLoader{
 
                 break;
             case 4:
-                if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 3.5 && quarter.get(2).length() == 3.5 && quarter.get(3).length() == 3.5){
+                if(quarter.get(0).length() >= 3.5 && quarter.get(1).length() >= 3.5 && quarter.get(2).length() >= 3.5 && quarter.get(3).length() >= 3.5){
                     listOfRhythms.set(7,listOfRhythms.get(7)+1);
-                }else if( quarter.get(2).length() == 2.5 && quarter.get(3).length() == 2.5){
+                }else if( quarter.get(2).length() <= 3.0 && quarter.get(3).length() <= 3.0){
                     listOfRhythms.set(14,listOfRhythms.get(14)+1);
-                }else if( quarter.get(2).length() == 2.0){
+                }else if( quarter.get(2).length() <= 2.0){
                     listOfRhythms.set(15,listOfRhythms.get(15)+1);
-                }else if( quarter.get(3).length() == 2.0){
+                }else if( quarter.get(3).length() <= 2.0){
                     listOfRhythms.set(16,listOfRhythms.get(16)+1);
-                }else if( quarter.get(0).length() == 2.5 && quarter.get(3).length() == 2.5){
+                }else if( quarter.get(0).length() <= 3.0 && quarter.get(3).length() <= 3.0){
                     listOfRhythms.set(19,listOfRhythms.get(19)+1);
-                }else if( quarter.get(0).length() == 2.5 && quarter.get(1).length() == 2.5){
+                }else if( quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0){
                     listOfRhythms.set(21,listOfRhythms.get(21)+1);
-                }else if( quarter.get(0).length() == 2.0 ){
+                }else if( quarter.get(0).length() <= 2.0 ){
                     listOfRhythms.set(22,listOfRhythms.get(22)+1);
-                }else if( quarter.get(1).length() == 2.0){
+                }else if( quarter.get(1).length() <= 2.0){
                     listOfRhythms.set(23,listOfRhythms.get(23)+1);
                 }
 
                 break;
 
             case 5:
-                if(quarter.get(4).length() <= 3.5){
+                if(quarter.get(4).length() <= 4.0){
                     listOfRhythms.set(17,listOfRhythms.get(17)+1);
-                }else if(quarter.get(0).length() <= 3.5){
+                }else if(quarter.get(0).length() <= 4.0){
                     listOfRhythms.set(20,listOfRhythms.get(20)+1);
                 }
                 break;
