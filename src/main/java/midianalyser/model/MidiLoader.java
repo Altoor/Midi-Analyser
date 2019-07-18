@@ -180,7 +180,8 @@ public class MidiLoader{
                             //System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
                             PPQChangeTick = event.getTick();
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
-                            checkQuarter(quarter, keySig, majorKey);
+                            if(event.getTick()> 0) checkQuarter(quarter, keySig, majorKey);
+
 
                             if(! metaMessages.contains(event)){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
@@ -329,6 +330,7 @@ public class MidiLoader{
     public void TrochaicCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         int keyChromatic = (halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)+1)%7;
+        if(keyChromatic == 0) keyChromatic = 7;
         String sharpNotater = "";
         if (diff < 0) sharpNotater = ".";
 
@@ -431,13 +433,13 @@ public class MidiLoader{
         if(!majorKey){
             keyNote = 9;
         }
-        keyNote += (120+(7*keySig)) %12;
+        keyNote = (keyNote+(120+(7*keySig))) %12;
 
         node %= 12;
         if(node < keyNote) node += 12;
 
-
-        return (12+(node-keyNote))%12;
+        System.out.println("keyNote" + (120+(node-keyNote))%12);
+        return (120+(node-keyNote))%12;
 
     }
 
@@ -446,8 +448,7 @@ public class MidiLoader{
         if(!majorKey){
             keyNote = 9;
         }
-        keyNote += (120 + (7*keySig)) % 12;
-        System.out.println("keynote " + keyNote);
+        keyNote = (keyNote+ (120 + (7*keySig))) % 12;
         return keyNote;
 
     }
@@ -465,7 +466,7 @@ public class MidiLoader{
             case 3: firstTone = 3; break;
             case 4: firstTone = 3; break;
             case 5: firstTone = 4; break;
-            case 6: firstTone = 4; break;
+            case 6: firstTone = 5; break;
             case 7: firstTone = 5; break;
             case 8: firstTone = 6; break;
             case 9: firstTone = 6; break;
@@ -484,7 +485,7 @@ public class MidiLoader{
             case 3: secondTone = 3; break;
             case 4: secondTone = 3; break;
             case 5: secondTone = 4; break;
-            case 6: secondTone = 4; break;
+            case 6: secondTone = 5; break;
             case 7: secondTone = 5; break;
             case 8: secondTone = 6; break;
             case 9: secondTone = 6; break;
@@ -495,6 +496,7 @@ public class MidiLoader{
         }
 
         secondTone = secondTone + (7 * (int) Math.round((keySigCheck(0,keySig, majorKey)+secondNote)/12));
+        System.out.println("first" + keySigCheck(firstNote, keySig, majorKey) + "second"+keySigCheck(secondNote, keySig, majorKey));
         System.out.println("first" + firstTone + "second"+secondTone);
         return (secondTone - firstTone);
     }
