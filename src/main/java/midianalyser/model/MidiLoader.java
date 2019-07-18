@@ -437,7 +437,7 @@ public class MidiLoader{
         if(node < keyNote) node += 12;
 
 
-        return (node-keyNote)%12;
+        return (12+(node-keyNote))%12;
 
     }
 
