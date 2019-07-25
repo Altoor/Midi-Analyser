@@ -290,17 +290,17 @@ public class MidiLoader{
 
                 break;
             case 4:
-                if(quarter.get(0).length() == 3.5 && quarter.get(1).length() == 3.5 && quarter.get(2).length() == 3.5 && quarter.get(3).length() == 3.5){
+                if(quarter.get(0).length() >= 3.5 && quarter.get(1).length() >= 3.5 && quarter.get(2).length() >= 3.5 && quarter.get(3).length() >= 3.5){
                     listOfRhythms.set(7,listOfRhythms.get(7)+1);
-                }else if( quarter.get(2).length() == 2.5 && quarter.get(3).length() == 2.5){
+                }else if( quarter.get(2).length() <= 3.0 && quarter.get(3).length() <= 3.0){
                     listOfRhythms.set(14,listOfRhythms.get(14)+1);
                 }else if( quarter.get(2).length() == 2.0){
                     listOfRhythms.set(15,listOfRhythms.get(15)+1);
                 }else if( quarter.get(3).length() == 2.0){
                     listOfRhythms.set(16,listOfRhythms.get(16)+1);
-                }else if( quarter.get(0).length() == 2.5 && quarter.get(3).length() == 2.5){
+                }else if( quarter.get(0).length() <= 3.0 && quarter.get(3).length() <= 3.0){
                     listOfRhythms.set(19,listOfRhythms.get(19)+1);
-                }else if( quarter.get(0).length() == 2.5 && quarter.get(1).length() == 2.5){
+                }else if( quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0){
                     listOfRhythms.set(21,listOfRhythms.get(21)+1);
                 }else if( quarter.get(0).length() == 2.0 ){
                     listOfRhythms.set(22,listOfRhythms.get(22)+1);
@@ -330,8 +330,9 @@ public class MidiLoader{
         int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
+        diff =  Math.abs(diff)+1;
 
-        String key = 1+ "" + Math.abs(diff) + sharpNotater;
+        String key = 1+ "" + Math.abs(diff)  + sharpNotater;
 
         if(mapOfTrochees.get(key) == null){
             HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
@@ -474,25 +475,25 @@ public class MidiLoader{
         firstTone = firstTone + (7 * (int) Math.round((keySigCheck(0, keySig, majorKey)+firstNote)/12));
 
         switch(keySigCheck(secondNote, keySig, majorKey)){
-            case 0: firstTone = 1; break;
-            case 1: firstTone = 2; break;
-            case 2: firstTone = 2; break;
-            case 3: firstTone = 3; break;
-            case 4: firstTone = 3; break;
-            case 5: firstTone = 4; break;
-            case 6: firstTone = 4; break;
-            case 7: firstTone = 5; break;
-            case 8: firstTone = 6; break;
-            case 9: firstTone = 6; break;
-            case 10: firstTone = 7; break;
-            case 11: firstTone = 7; break;
-            case 12: firstTone = 8; break;
-            default: firstTone = 1; break;
+            case 0: secondTone = 1; break;
+            case 1: secondTone = 2; break;
+            case 2: secondTone = 2; break;
+            case 3: secondTone = 3; break;
+            case 4: secondTone = 3; break;
+            case 5: secondTone = 4; break;
+            case 6: secondTone = 4; break;
+            case 7: secondTone = 5; break;
+            case 8: secondTone = 6; break;
+            case 9: secondTone = 6; break;
+            case 10: secondTone = 7; break;
+            case 11: secondTone = 7; break;
+            case 12: secondTone = 8; break;
+            default: secondTone = 1; break;
         }
 
         secondTone = secondTone + (7 * (int) Math.round((keySigCheck(0,keySig, majorKey)+secondNote)/12));
         System.out.println("first" + firstTone + "second"+secondTone);
-        return (secondTone - firstNote);
+        return (secondTone - firstTone);
     }
 
     public void clearAnalytics(){
