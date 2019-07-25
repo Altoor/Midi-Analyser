@@ -180,7 +180,8 @@ public class MidiLoader{
                             //System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
                             PPQChangeTick = event.getTick();
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
-                            checkQuarter(quarter, keySig, majorKey);
+                            if(event.getTick()> 0) checkQuarter(quarter, keySig, majorKey);
+
 
                             if(! metaMessages.contains(event)){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
@@ -270,15 +271,15 @@ public class MidiLoader{
                 }
                 break;
             case 3:
-                if(quarter.get(0).length() == 2.5 && quarter.get(1).length() == 2.5 && quarter.get(2).length() == 2.5){
+                if(quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0 && quarter.get(2).length() <= 3.0){
                     listOfRhythms.set(9,listOfRhythms.get(9)+1);
-                }else if(quarter.get(0).length() == 2.0 && quarter.get(1).length() >= 5.0){
+                }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 5.0){
                     listOfRhythms.set(10,listOfRhythms.get(10)+1);
-                }else if(quarter.get(0).length() >= 5.0 && quarter.get(1).length() == 2.0){
+                }else if(quarter.get(0).length() >= 5.0 && quarter.get(1).length() <= 2.0){
                     listOfRhythms.set(11,listOfRhythms.get(11)+1);
-                }else if(quarter.get(1).length() == 2.0 && quarter.get(2).length() >= 5.0){
+                }else if(quarter.get(1).length() <= 2.0 && quarter.get(2).length() >= 5.0){
                     listOfRhythms.set(12,listOfRhythms.get(12)+1);
-                }else if(quarter.get(1).length() >= 5.0 && quarter.get(2).length() == 2.0){
+                }else if(quarter.get(1).length() >= 5.0 && quarter.get(2).length() <= 2.0){
                     listOfRhythms.set(13,listOfRhythms.get(13)+1);
                 }else if(quarter.get(0).length() == 2.0){
                     listOfRhythms.set(2,listOfRhythms.get(2)+1);
@@ -294,26 +295,26 @@ public class MidiLoader{
                     listOfRhythms.set(7,listOfRhythms.get(7)+1);
                 }else if( quarter.get(2).length() <= 3.0 && quarter.get(3).length() <= 3.0){
                     listOfRhythms.set(14,listOfRhythms.get(14)+1);
-                }else if( quarter.get(2).length() == 2.0){
+                }else if( quarter.get(2).length() <= 2.0){
                     listOfRhythms.set(15,listOfRhythms.get(15)+1);
-                }else if( quarter.get(3).length() == 2.0){
+                }else if( quarter.get(3).length() <= 2.0){
                     listOfRhythms.set(16,listOfRhythms.get(16)+1);
                 }else if( quarter.get(0).length() <= 3.0 && quarter.get(3).length() <= 3.0){
                     listOfRhythms.set(19,listOfRhythms.get(19)+1);
                 }else if( quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0){
                     listOfRhythms.set(21,listOfRhythms.get(21)+1);
-                }else if( quarter.get(0).length() == 2.0 ){
+                }else if( quarter.get(0).length() <= 2.0 ){
                     listOfRhythms.set(22,listOfRhythms.get(22)+1);
-                }else if( quarter.get(1).length() == 2.0){
+                }else if( quarter.get(1).length() <= 2.0){
                     listOfRhythms.set(23,listOfRhythms.get(23)+1);
                 }
 
                 break;
 
             case 5:
-                if(quarter.get(4).length() <= 3.5){
+                if(quarter.get(4).length() <= 4.0){
                     listOfRhythms.set(17,listOfRhythms.get(17)+1);
-                }else if(quarter.get(0).length() <= 3.5){
+                }else if(quarter.get(0).length() <= 4.0){
                     listOfRhythms.set(20,listOfRhythms.get(20)+1);
                 }
                 break;
@@ -328,6 +329,8 @@ public class MidiLoader{
 
     public void TrochaicCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
+        int keyChromatic = (halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)+1)%7;
+        if(keyChromatic == 0) keyChromatic = 7;
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
         diff =  Math.abs(diff)+1;
@@ -336,16 +339,18 @@ public class MidiLoader{
 
         if(mapOfTrochees.get(key) == null){
             HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
-            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey), 1);
+            newHM.put(keyChromatic, 1);
             mapOfTrochees.put(key,newHM);
 
         }else{
-            int count = 0;
-            if(mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)) != null){
-                count = mapOfTrochees.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey));
+            if(mapOfTrochees.get(key).get(keyChromatic) != null){
+                int count = mapOfTrochees.get(key).get(keyChromatic);
+                mapOfTrochees.get(key).put(keyChromatic,count+1);
+            }else{
+                mapOfTrochees.get(key).put(keyChromatic,1);
             }
 
-            mapOfTrochees.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey),count+1);
+
         }
 
     }
@@ -353,26 +358,27 @@ public class MidiLoader{
     public void DactylCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note(), keySig, majorKey);
+        int keyChromatic = (halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)+1)%7;
         String sharpNotater1 = "";
         String sharpNotater2= "";
         if (diff1< 0) sharpNotater1 = ".";
         if (diff2< 0) sharpNotater2 = ".";
 
-        String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
+        String key = 1+ "" + (Math.abs(diff1)+1) + sharpNotater1+ (Math.abs(diff2)+1) + sharpNotater2;
 
         if(mapOfDactyles.get(key) == null){
             HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
-            newHM.put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey), 1);
-
+            newHM.put(keyChromatic, 1);
             mapOfDactyles.put(key,newHM);
         }else{
-
-            int count = 0;
-            if(mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)) != null){
-                count = mapOfDactyles.get(key).get(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey));
+            if(mapOfDactyles.get(key).get(keyChromatic) != null){
+                int count = mapOfDactyles.get(key).get(keyChromatic);
+                mapOfDactyles.get(key).put(keyChromatic,count+1);
+            }else{
+                mapOfDactyles.get(key).put(keyChromatic,1);
             }
 
-            mapOfDactyles.get(key).put(halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey),count+1);
+
         }
 
     }
@@ -424,17 +430,17 @@ public class MidiLoader{
     }
 
     public int keySigCheck(int node, int keySig, boolean majorKey){
-            int keyNote = 0;
+    int keyNote = 0;
         if(!majorKey){
             keyNote = 9;
         }
-        keyNote = (keyNote+(7*keySig)) %12;
+        keyNote = (keyNote+(120+(7*keySig))) %12;
 
         node %= 12;
         if(node < keyNote) node += 12;
 
-
-        return (node-keyNote)%12;
+        System.out.println("keyNote" + (120+(node-keyNote))%12);
+        return (120+(node-keyNote))%12;
 
     }
 
@@ -443,8 +449,7 @@ public class MidiLoader{
         if(!majorKey){
             keyNote = 9;
         }
-        keyNote += (7*keySig) % 12;
-        System.out.println("keynote" + keyNote);
+        keyNote = (keyNote+ (120 + (7*keySig))) % 12;
         return keyNote;
 
     }
@@ -462,7 +467,7 @@ public class MidiLoader{
             case 3: firstTone = 3; break;
             case 4: firstTone = 3; break;
             case 5: firstTone = 4; break;
-            case 6: firstTone = 4; break;
+            case 6: firstTone = 5; break;
             case 7: firstTone = 5; break;
             case 8: firstTone = 6; break;
             case 9: firstTone = 6; break;
@@ -492,6 +497,7 @@ public class MidiLoader{
         }
 
         secondTone = secondTone + (7 * (int) Math.round((keySigCheck(0,keySig, majorKey)+secondNote)/12));
+        System.out.println("first" + keySigCheck(firstNote, keySig, majorKey) + "second"+keySigCheck(secondNote, keySig, majorKey));
         System.out.println("first" + firstTone + "second"+secondTone);
         return (secondTone - firstTone);
     }
