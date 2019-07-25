@@ -359,17 +359,21 @@ public class MidiLoader{
         int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note(), keySig, majorKey);
         int keyChromatic = (halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)+1)%7;
+        if(keyChromatic == 0) keyChromatic = 7;
         String sharpNotater1 = "";
         String sharpNotater2= "";
         if (diff1< 0) sharpNotater1 = ".";
         if (diff2< 0) sharpNotater2 = ".";
+        diff1 =  Math.abs(diff1)+1;
+        diff2 =  Math.abs(diff2)+1;
 
-        String key = 1+ "" + (Math.abs(diff1)+1) + sharpNotater1+ (Math.abs(diff2)+1) + sharpNotater2;
+        String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
 
         if(mapOfDactyles.get(key) == null){
             HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
             newHM.put(keyChromatic, 1);
             mapOfDactyles.put(key,newHM);
+
         }else{
             if(mapOfDactyles.get(key).get(keyChromatic) != null){
                 int count = mapOfDactyles.get(key).get(keyChromatic);
@@ -486,7 +490,7 @@ public class MidiLoader{
             case 3: secondTone = 3; break;
             case 4: secondTone = 3; break;
             case 5: secondTone = 4; break;
-            case 6: secondTone = 4; break;
+            case 6: secondTone = 5; break;
             case 7: secondTone = 5; break;
             case 8: secondTone = 6; break;
             case 9: secondTone = 6; break;
