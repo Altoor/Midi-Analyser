@@ -163,7 +163,14 @@ public class MidiLoader{
                         if(type == MidiEventType.TRACKNAME.type()){
 
                         }else if(type == MidiEventType.END_OF_TRACK.type()){
-                            checkQuarter(quarter, keySig, majorKey);
+                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+                                        checkQuarter(quarter, keySig, majorKey);
+                                    }
+                                }
+                            }
+
 
                         }else if(type == MidiEventType.SET_TEMPO.type()){
                             int out = 0;
@@ -180,7 +187,15 @@ public class MidiLoader{
                             //System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
                             PPQChangeTick = event.getTick();
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
-                            if(event.getTick()> 0) checkQuarter(quarter, keySig, majorKey);
+                            if(event.getTick()> 0){
+                                if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                        if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+                                            checkQuarter(quarter, keySig, majorKey);
+                                        }
+                                    }
+                                }
+                            }
 
 
                             if(! metaMessages.contains(event)){
