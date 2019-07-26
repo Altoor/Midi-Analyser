@@ -15,6 +15,11 @@ import javax.sound.midi.MetaMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.InvalidMidiDataException;
 
+import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.*;
+
 import java.io.IOException;
 
 
@@ -28,7 +33,7 @@ public class MidiLoader{
     public static final int NOTE_ON = 0x90;
     public static final int NOTE_OFF = 0x80;
     private File midiDirectory;
-    private File[] midiFiles;
+    private ArrayList<File> midiFiles;
     private Sequence sequence;
     private ArrayList<Integer> listOfTones;
     private ArrayList<Integer> listOfRhythms;
@@ -63,7 +68,7 @@ public class MidiLoader{
 
     public void setDirectory(File midiDirectory) throws IOException{
         this.midiDirectory = midiDirectory;
-        midiFiles = midiDirectory.listFiles(new MidiFileFilter());
+        midiFiles = new ArrayList<>(FileUtils.listFiles(midiDirectory,new RegexFileFilter("^(.*.mid)"),DirectoryFileFilter.DIRECTORY));
         for(File file : midiFiles){
             System.out.println(file.getName());
         }
