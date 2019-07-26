@@ -84,6 +84,14 @@ public class View {
 		//rhytmTable
 		trochaicTable.getChildren().clear();
 		int q = 0;
+		int superTotal = 0;
+		for (Map.Entry<String, HashMap<Integer, Integer>> entry : mapOfTrochees.entrySet()) {
+			for(int i = 1; i < 8; i++){
+				int entryInt = 0;
+				if(entry.getValue().get(i) != null) entryInt = entry.getValue().get(i);
+				superTotal += entryInt;
+			}
+		}
 		for (Map.Entry<String, HashMap<Integer, Integer>> entry : mapOfTrochees.entrySet()) {
 			text = new Text(entry.getKey());
 			trochaicTable.setConstraints(text, 0, q);
@@ -101,11 +109,25 @@ public class View {
 			text = new Text("" + total);
 			trochaicTable.setConstraints(text, 9, q);
 			trochaicTable.getChildren().add(text);
+
+			text = new Text("" + (Math.round(((double) total/(double) superTotal*100)*100.0)/100.0)+"%");
+			trochaicTable.setConstraints(text, 10, q);
+			trochaicTable.getChildren().add(text);
+
 			q++;
 		}
 
 		dactylTable.getChildren().clear();
 		q = 0;
+		superTotal = 0;
+		for (Map.Entry<String, HashMap<Integer, Integer>> entry : mapOfDactyles.entrySet()) {
+			for(int i = 1; i < 8; i++){
+				int entryInt= 0;
+				if(entry.getValue().get(i) != null) entryInt = entry.getValue().get(i);
+				superTotal += entryInt;
+			}
+		}
+
 		for (Map.Entry<String, HashMap<Integer, Integer>> entry : mapOfDactyles.entrySet()) {
 			text = new Text(entry.getKey());
 			dactylTable.setConstraints(text, 0, q);
@@ -122,11 +144,17 @@ public class View {
 			text = new Text("" + total);
 			dactylTable.setConstraints(text, 9, q);
 			dactylTable.getChildren().add(text);
+
+			text = new Text("" + (Math.round(((double) total/(double) superTotal*100)*100.0)/100.0)+"%");
+			dactylTable.setConstraints(text, 10, q);
+			dactylTable.getChildren().add(text);
+
 			q++;
 		}
 
 		keyTable.getChildren().clear();
 		q = 0;
+		superTotal = 0;
 		for (Map.Entry<String, Integer> entry : mapOfKeys.entrySet()) {
 			text = new Text(entry.getKey());
 			keyTable.setConstraints(text, 0, q);

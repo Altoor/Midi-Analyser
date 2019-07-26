@@ -353,6 +353,7 @@ public class MidiLoader{
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
         diff =  Math.abs(diff)+1;
+        if(diff>=8) return;
 
         String key = 1+ "" + Math.abs(diff)  + sharpNotater;
 
@@ -384,6 +385,8 @@ public class MidiLoader{
         if (diff2< 0) sharpNotater2 = ".";
         diff1 =  Math.abs(diff1)+1;
         diff2 =  Math.abs(diff2)+1;
+
+        if(diff1>=8 ||diff2>=8 ) return;
 
         String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
 
