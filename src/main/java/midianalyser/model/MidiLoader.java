@@ -146,8 +146,8 @@ public class MidiLoader{
                                     System.out.println("note: " + key);
                                     System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
-                                    for(double l = 1; l < 32; l +=0.5){
-                                        if(lengthInTicks >= (int) (PPQ/l)-((PPQ/l)/5) && lengthInTicks <= (int) (PPQ/l)+((PPQ/l)/5)){
+                                    for(double l = 1; l < 32; l +=0.25){
+                                        if(lengthInTicks >= (int) (PPQ/l)-(PPQ/25) && lengthInTicks <= (int) (PPQ/l)+(PPQ/25)){
                                             simulNotes.get(n).setLength(l);
                                             break;
                                         }
@@ -278,19 +278,22 @@ public class MidiLoader{
         switch(quarter.size()){
             case 1:
                 listOfRhythms.set(0,listOfRhythms.get(0)+1);
+                listOfRhythms.set(24,listOfRhythms.get(24)+1);
                 break;
             case 2:
+                listOfRhythms.set(25,listOfRhythms.get(25)+1);
                 if(quarter.get(0).length() == 2.0 && quarter.get(1).length() == 2.0){
                     listOfRhythms.set(1,listOfRhythms.get(1)+1);
-                }else if(quarter.get(0).length() == 1.5 && quarter.get(1).length() >= 3.0){
+                }else if(quarter.get(0).length() <= 2 && quarter.get(1).length() > 3.0){
                     listOfRhythms.set(5,listOfRhythms.get(5)+1);
-                }else if(quarter.get(0).length() >= 3.0 && quarter.get(1).length() == 1.5){
+                }else if(quarter.get(0).length() > 3.0 && quarter.get(1).length() <= 2){
                     listOfRhythms.set(6,listOfRhythms.get(6)+1);
-                }else if(quarter.get(0).length() == 1.5 && quarter.get(1).length() == 2.5){
+                }else if(quarter.get(0).length() <= 2 && quarter.get(1).length() <= 3.0){
                     listOfRhythms.set(8,listOfRhythms.get(8)+1);
                 }
                 break;
             case 3:
+                listOfRhythms.set(26,listOfRhythms.get(26)+1);
                 if(quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0 && quarter.get(2).length() <= 3.0){
                     listOfRhythms.set(9,listOfRhythms.get(9)+1);
                 }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 5.0){
@@ -311,6 +314,7 @@ public class MidiLoader{
 
                 break;
             case 4:
+                listOfRhythms.set(27,listOfRhythms.get(27)+1);
                 if(quarter.get(0).length() >= 3.5 && quarter.get(1).length() >= 3.5 && quarter.get(2).length() >= 3.5 && quarter.get(3).length() >= 3.5){
                     listOfRhythms.set(7,listOfRhythms.get(7)+1);
                 }else if( quarter.get(2).length() <= 3.0 && quarter.get(3).length() <= 3.0){

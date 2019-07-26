@@ -30,7 +30,7 @@ public class Model{
         toneList = new ArrayList<Integer>();
         for(int i = 0; i < 12; i++) toneList.add(0);
         rhythmList = new ArrayList<Integer>();
-        for(int i = 0; i < 24; i++) rhythmList.add(0);
+        for(int i = 0; i < 28; i++) rhythmList.add(0);
         mapOfTrochees = new TreeMap<String, HashMap<Integer, Integer>>();
         mapOfDactyles = new TreeMap<String, HashMap<Integer, Integer>>();
         mapOfKeys = new TreeMap<String, Integer>();
