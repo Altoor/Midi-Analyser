@@ -525,7 +525,7 @@ public class MidiLoader{
         firstTone = chromaticToDiatonic(firstNote, keySig, majorKey);
         firstTone = firstTone + (7 * (int) Math.round((keySigCheck(0, keySig, majorKey)+firstNote)/12));
 
-        secondTone = chromaticToDiatonic(firstNote, keySig, majorKey);
+        secondTone = chromaticToDiatonic(secondNote, keySig, majorKey);
         secondTone = secondTone + (7 * (int) Math.round((keySigCheck(0,keySig, majorKey)+secondNote)/12));
 
         return (secondTone - firstTone);
