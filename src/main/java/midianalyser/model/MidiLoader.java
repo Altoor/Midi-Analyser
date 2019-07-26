@@ -146,9 +146,10 @@ public class MidiLoader{
                                     System.out.println("note: " + key);
                                     System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
-                                    for(double l = 1; l < 32; l +=0.25){
-                                        if(lengthInTicks >= (int) (PPQ/l)-(PPQ/25) && lengthInTicks <= (int) (PPQ/l)+(PPQ/25)){
+                                    for(double l = 0; l < 32; l +=0.25){
+                                        if(lengthInTicks <= (int) ((double) PPQ/ (double) l)-((double) PPQ/ 20.0)){
                                             simulNotes.get(n).setLength(l);
+                                        }else{
                                             break;
                                         }
                                     }
@@ -278,44 +279,48 @@ public class MidiLoader{
         switch(quarter.size()){
             case 1:
                 listOfRhythms.set(0,listOfRhythms.get(0)+1);
-                listOfRhythms.set(24,listOfRhythms.get(24)+1);
+                listOfRhythms.set(26,listOfRhythms.get(26)+1);
                 break;
             case 2:
-                listOfRhythms.set(25,listOfRhythms.get(25)+1);
-                if(quarter.get(0).length() == 2.0 && quarter.get(1).length() == 2.0){
+                listOfRhythms.set(27,listOfRhythms.get(27)+1);
+                if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() <= 2.0){
                     listOfRhythms.set(1,listOfRhythms.get(1)+1);
-                }else if(quarter.get(0).length() <= 2 && quarter.get(1).length() > 3.0){
+                }else if(quarter.get(0).length() <= 2 && quarter.get(1).length() >= 3.0){
                     listOfRhythms.set(5,listOfRhythms.get(5)+1);
-                }else if(quarter.get(0).length() > 3.0 && quarter.get(1).length() <= 2){
+                }else if(quarter.get(0).length() >= 3.0 && quarter.get(1).length() <= 2){
                     listOfRhythms.set(6,listOfRhythms.get(6)+1);
-                }else if(quarter.get(0).length() <= 2 && quarter.get(1).length() <= 3.0){
+                }else if(quarter.get(0).length() <= 1.5 && quarter.get(1).length() >= 2.5){
                     listOfRhythms.set(8,listOfRhythms.get(8)+1);
+                }else if(quarter.get(0).length() >= 2.5 && quarter.get(1).length() <= 1.5){
+                    listOfRhythms.set(24,listOfRhythms.get(24)+1);
                 }
                 break;
             case 3:
-                listOfRhythms.set(26,listOfRhythms.get(26)+1);
+                listOfRhythms.set(28,listOfRhythms.get(28)+1);
                 if(quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0 && quarter.get(2).length() <= 3.0){
                     listOfRhythms.set(9,listOfRhythms.get(9)+1);
-                }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 5.0){
+                }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 4.5 && quarter.get(2).length() <= 3){
                     listOfRhythms.set(10,listOfRhythms.get(10)+1);
-                }else if(quarter.get(0).length() >= 5.0 && quarter.get(1).length() <= 2.0){
+                }else if(quarter.get(0).length() >= 4.5 && quarter.get(1).length() <= 2.0 && quarter.get(2).length() <= 3){
                     listOfRhythms.set(11,listOfRhythms.get(11)+1);
-                }else if(quarter.get(1).length() <= 2.0 && quarter.get(2).length() >= 5.0){
+                }else if(quarter.get(0).length() <= 3  && quarter.get(1).length() <= 2.0 && quarter.get(2).length() >= 4.5){
                     listOfRhythms.set(12,listOfRhythms.get(12)+1);
-                }else if(quarter.get(1).length() >= 5.0 && quarter.get(2).length() <= 2.0){
+                }else if(quarter.get(0).length() <= 3 && quarter.get(1).length() >= 4.5 && quarter.get(2).length() <= 2.0){
                     listOfRhythms.set(13,listOfRhythms.get(13)+1);
-                }else if(quarter.get(0).length() == 2.0){
+                }else if(quarter.get(0).length() <= 1.5 && quarter.get(1).length() >= 4.0 && quarter.get(2).length() >= 4.0){
+                    listOfRhythms.set(25,listOfRhythms.get(25)+1);
+                }else if(quarter.get(0).length() <= 2.0){
                     listOfRhythms.set(2,listOfRhythms.get(2)+1);
-                }else if(quarter.get(1).length() == 2.0 ){
+                }else if(quarter.get(1).length() <= 2.0 ){
                     listOfRhythms.set(3,listOfRhythms.get(3)+1);
-                }else if(quarter.get(2).length() == 2.0){
+                }else if(quarter.get(2).length() <= 2.0){
                     listOfRhythms.set(4,listOfRhythms.get(4)+1);
                 }
 
                 break;
             case 4:
-                listOfRhythms.set(27,listOfRhythms.get(27)+1);
-                if(quarter.get(0).length() >= 3.5 && quarter.get(1).length() >= 3.5 && quarter.get(2).length() >= 3.5 && quarter.get(3).length() >= 3.5){
+                listOfRhythms.set(29,listOfRhythms.get(29)+1);
+                if(quarter.get(0).length() >= 3.0 && quarter.get(1).length() >= 3.0 && quarter.get(2).length() >= 3.0 && quarter.get(3).length() >= 3.0){
                     listOfRhythms.set(7,listOfRhythms.get(7)+1);
                 }else if( quarter.get(2).length() <= 3.0 && quarter.get(3).length() <= 3.0){
                     listOfRhythms.set(14,listOfRhythms.get(14)+1);

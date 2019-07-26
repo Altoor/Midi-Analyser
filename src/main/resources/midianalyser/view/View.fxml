@@ -359,7 +359,7 @@
                                                 <Image url="@Note%20PNG's/A_0023_Layer-27.png" />
                                              </image>
                                           </ImageView>
-                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="80.0" style="&#10;" text="Jambic" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="4">
+                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="80.0" style="&#10;" text="Jambic" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="6">
                                              <font>
                                                 <Font size="18.0" fx:id="x111413" />
                                              </font>
@@ -367,7 +367,7 @@
                                                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x211413" />
                                              </textFill>
                                           </Label>
-                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="82.0" style="&#10;" text="Trochaic" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="5">
+                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="82.0" style="&#10;" text="Trochaic" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="7">
                                              <font>
                                                 <Font size="18.0" fx:id="x1114131" />
                                              </font>
@@ -375,7 +375,7 @@
                                                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x2114131" />
                                              </textFill>
                                           </Label>
-                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="83.0" style="&#10;" text="Dactyle" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="6">
+                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="83.0" style="&#10;" text="Dactyle" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="8">
                                              <font>
                                                 <Font size="18.0" fx:id="x11141311" />
                                              </font>
@@ -383,7 +383,7 @@
                                                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x21141311" />
                                              </textFill>
                                           </Label>
-                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="87.0" style="&#10;" text="Primus paeon" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="7">
+                                          <Label alignment="CENTER" minWidth="20.0" prefHeight="27.0" prefWidth="87.0" style="&#10;" text="Primus paeon" textAlignment="CENTER" wrapText="false" GridPane.rowIndex="9">
                                              <font>
                                                 <Font size="18.0" fx:id="x111413111" />
                                              </font>
@@ -391,6 +391,16 @@
                                                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x211413111" />
                                              </textFill>
                                           </Label>
+                                          <ImageView GridPane.rowIndex="4">
+                                             <image>
+                                                <Image url="@../../../../../Rhythms/A_0024_Layer-28.png" />
+                                             </image>
+                                          </ImageView>
+                                          <ImageView GridPane.rowIndex="5">
+                                             <image>
+                                                <Image url="@../../../../../Rhythms/A_0025_Layer-29.png" />
+                                             </image>
+                                          </ImageView>
                                        </children>
                                     </GridPane>
                                     <GridPane fx:id="rhythmTable2" alignment="CENTER" layoutX="392.0" layoutY="3.0" prefHeight="516.0" prefWidth="189.0">
