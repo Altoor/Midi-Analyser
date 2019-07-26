@@ -114,7 +114,7 @@ public class MidiLoader{
                             MidiNote note = new MidiNote(key,event.getTick(),keySig);
 
                             if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                     if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
 
                                         if(event.getTick() >= currQuarterTick + PPQ ){
@@ -164,7 +164,7 @@ public class MidiLoader{
 
                         }else if(type == MidiEventType.END_OF_TRACK.type()){
                             if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                     if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
                                         checkQuarter(quarter, keySig, majorKey);
                                     }
@@ -189,7 +189,7 @@ public class MidiLoader{
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
                             if(event.getTick()> 0){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
                                             checkQuarter(quarter, keySig, majorKey);
                                         }
@@ -200,7 +200,7 @@ public class MidiLoader{
 
                             if(! metaMessages.contains(event)){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
 
                                             addTimeSig(timeSigNumerator, timeSigDenominator);
@@ -218,7 +218,7 @@ public class MidiLoader{
 
                             if(! metaMessages.contains(event)){
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
 
                                             addKeySig(keySig, majorKey);
@@ -344,8 +344,7 @@ public class MidiLoader{
 
     public void TrochaicCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
-        int keyChromatic = (halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)+1)%7;
-        if(keyChromatic == 0) keyChromatic = 7;
+        int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
         diff =  Math.abs(diff)+1;
@@ -373,8 +372,7 @@ public class MidiLoader{
     public void DactylCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
         int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note(), keySig, majorKey);
-        int keyChromatic = (halfToneToTone(0,keySigCheck(quarter.get(0).note(),keySig, majorKey), keySig, majorKey)+1)%7;
-        if(keyChromatic == 0) keyChromatic = 7;
+        int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
         String sharpNotater1 = "";
         String sharpNotater2= "";
         if (diff1< 0) sharpNotater1 = ".";
@@ -423,8 +421,48 @@ public class MidiLoader{
         return key;
     }
 
+    public int rootNote(int keySig, boolean majorKey){
+        int root = 0;
+        if(majorKey){
+            switch(keySig){
+                case 0: root = 0; break;
+                case 1: root = 7; break;
+                case 2: root = 2; break;
+                case 3: root = 9; break;
+                case 4: root = 4; break;
+                case 5: root = 11; break;
+                case 6: root = 6; break;
+                case -1: root = 5; break;
+                case -2: root = 10; break;
+                case -3: root = 3; break;
+                case -4: root = 8; break;
+                case -5: root = 1; break;
+                case -6: root = 6; break;
+                default: root = 0; break;
+            }
+        }else{
+            switch(keySig){
+                case 0: root = 9; break;
+                case 1: root = 4; break;
+                case 2: root = 11; break;
+                case 3: root = 6; break;
+                case 4: root = 1; break;
+                case 5: root = 8; break;
+                case 6: root = 3; break;
+                case -1: root = 2; break;
+                case -2: root = 7; break;
+                case -3: root = 0; break;
+                case -4: root = 5; break;
+                case -5: root = 10; break;
+                case -6: root = 3; break;
+                default: root = 9; break;
+            }
+        }
+        return root;
+    }
+
     public void addKeySig(int keySig, boolean majorKey){
-        String key = "" +keyToString(keySigAsKey(keySig,majorKey));
+        String key = "" +keyToString(rootNote(keySig,majorKey));
         if(majorKey){
             key += " major";
         }else{
@@ -448,76 +486,48 @@ public class MidiLoader{
 
     }
 
-    public int keySigCheck(int node, int keySig, boolean majorKey){
-    int keyNote = 0;
-        if(!majorKey){
-            keyNote = 9;
-        }
-        keyNote = (keyNote+(120+(7*keySig))) %12;
+    public int keySigCheck(int note, int keySig, boolean majorKey){
 
-        node %= 12;
-        if(node < keyNote) node += 12;
-
-        System.out.println("keyNote" + (120+(node-keyNote))%12);
-        return (120+(node-keyNote))%12;
+        int root =rootNote(keySig,majorKey);
+        note%= 12;
+        if(note < 0) note += 12;
+        if(note < root) note += 12;
+        return note-root;
 
     }
 
-    public int keySigAsKey(int keySig, boolean majorKey){
-        int keyNote = 0;
-        if(!majorKey){
-            keyNote = 9;
+    public int chromaticToDiatonic(int note, int keySig,boolean majorKey){
+        int out = 1;
+        switch(keySigCheck(note, keySig, majorKey)){
+            case 0: out = 1; break;
+            case 1: out = 2; break;
+            case 2: out = 2; break;
+            case 3: out = 3; break;
+            case 4: out = 3; break;
+            case 5: out = 4; break;
+            case 6: out = 5; break;
+            case 7: out = 5; break;
+            case 8: out = 6; break;
+            case 9: out = 6; break;
+            case 10: out = 7; break;
+            case 11: out = 7; break;
+            case 12: out = 8; break;
+            default: out = 1; break;
         }
-        keyNote = (keyNote+ (120 + (7*keySig))) % 12;
-        return keyNote;
-
+        return out;
     }
-
 
 
     public int halfToneToTone(int firstNote, int secondNote, int keySig, boolean majorKey){
         int firstTone = 0;
         int secondTone = 0;
 
-        switch(keySigCheck(firstNote, keySig, majorKey)){
-            case 0: firstTone = 1; break;
-            case 1: firstTone = 2; break;
-            case 2: firstTone = 2; break;
-            case 3: firstTone = 3; break;
-            case 4: firstTone = 3; break;
-            case 5: firstTone = 4; break;
-            case 6: firstTone = 5; break;
-            case 7: firstTone = 5; break;
-            case 8: firstTone = 6; break;
-            case 9: firstTone = 6; break;
-            case 10: firstTone = 7; break;
-            case 11: firstTone = 7; break;
-            case 12: firstTone = 8; break;
-            default: firstTone = 1; break;
-        }
-
+        firstTone = chromaticToDiatonic(firstNote, keySig, majorKey);
         firstTone = firstTone + (7 * (int) Math.round((keySigCheck(0, keySig, majorKey)+firstNote)/12));
 
-        switch(keySigCheck(secondNote, keySig, majorKey)){
-            case 0: secondTone = 1; break;
-            case 1: secondTone = 2; break;
-            case 2: secondTone = 2; break;
-            case 3: secondTone = 3; break;
-            case 4: secondTone = 3; break;
-            case 5: secondTone = 4; break;
-            case 6: secondTone = 5; break;
-            case 7: secondTone = 5; break;
-            case 8: secondTone = 6; break;
-            case 9: secondTone = 6; break;
-            case 10: secondTone = 7; break;
-            case 11: secondTone = 7; break;
-            case 12: secondTone = 8; break;
-            default: secondTone = 1; break;
-        }
-
+        secondTone = chromaticToDiatonic(firstNote, keySig, majorKey);
         secondTone = secondTone + (7 * (int) Math.round((keySigCheck(0,keySig, majorKey)+secondNote)/12));
-        System.out.println("first" + keySigCheck(firstNote, keySig, majorKey) + "second"+keySigCheck(secondNote, keySig, majorKey));
-        System.out.println("first" + firstTone + "second"+secondTone);
+
         return (secondTone - firstTone);
     }
 
