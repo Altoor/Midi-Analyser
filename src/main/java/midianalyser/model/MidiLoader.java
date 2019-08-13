@@ -224,7 +224,7 @@ public class MidiLoader{
                             if(mm.getData()[1] != 0) majorKey = false;
                             System.out.println("keySig :" +keySig + "major" + majorKey);
                             if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                     if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
                                         if(! metaMessages.contains(event)){
                                             addKeySig(keySig, majorKey);
@@ -297,7 +297,8 @@ public class MidiLoader{
                 }
                 break;
             case 3:
-                if(quarter.get(0).length() >= 2.5 && quarter.get(0).length() <= 3.5 && quarter.get(1).length() >= 2.5 &&  quarter.get(1).length() <= 3.5 && quarter.get(3).length() >= 2.5 &&  quarter.get(2).length() <= 3.5){
+                listOfRhythms.set(28,listOfRhythms.get(28)+1);
+                if(quarter.get(0).length() >= 2.5 && quarter.get(0).length() <= 3.5 && quarter.get(1).length() >= 2.5 &&  quarter.get(1).length() <= 3.5 && quarter.get(2).length() >= 2.5 &&  quarter.get(2).length() <= 3.5){
                     listOfRhythms.set(9,listOfRhythms.get(9)+1);
                 }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 4.5 && quarter.get(2).length() <= 3){
                     listOfRhythms.set(10,listOfRhythms.get(10)+1);
