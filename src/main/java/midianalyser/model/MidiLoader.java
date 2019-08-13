@@ -272,7 +272,7 @@ public class MidiLoader{
                 }
                 break;
             case 3:
-                if(quarter.get(0).length() <= 3.5 && quarter.get(1).length() <= 3.5 && quarter.get(2).length() <= 3.5){
+                if(quarter.get(0).length() >= 2.5 && quarter.get(0).length() <= 3.5 && quarter.get(1).length() >= 2.5 &&  quarter.get(1).length() <= 3.5 && quarter.get(3).length() >= 2.5 &&  quarter.get(2).length() <= 3.5){
                     listOfRhythms.set(9,listOfRhythms.get(9)+1);
                 }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 5.0){
                     listOfRhythms.set(10,listOfRhythms.get(10)+1);
