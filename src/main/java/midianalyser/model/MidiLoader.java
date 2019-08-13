@@ -120,7 +120,6 @@ public class MidiLoader{
                                         if(event.getTick() >= currQuarterTick + PPQ ){
                                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
                                             checkQuarter(quarter, keySig, majorKey);
-                                            quarter.clear();
                                         }
 
                                     }
@@ -197,22 +196,24 @@ public class MidiLoader{
                             }
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
+                            int oldKeySig = keySig;
+                            boolean oldMajorKey = majorKey;
+
                             keySig = mm.getData()[0];
                             if(mm.getData()[1] != 0) majorKey = false;
                             System.out.println("keySig :" +keySig + "major" + majorKey);
-
-                            if(! metaMessages.contains(event)){
-                                if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
-                                        if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
-
+                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(keySigAsKey(keySig,majorKey)))){
+                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+                                        if(! metaMessages.contains(event)){
                                             addKeySig(keySig, majorKey);
                                         }
-
+                                        checkQuarter(quarter, oldKeySig, oldMajorKey);
                                     }
-                                }
 
+                                }
                             }
+
 
                         }
                         metaMessages.add(event);
@@ -271,7 +272,7 @@ public class MidiLoader{
                 }
                 break;
             case 3:
-                if(quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0 && quarter.get(2).length() <= 3.0){
+                if(quarter.get(0).length() <= 3.5 && quarter.get(1).length() <= 3.5 && quarter.get(2).length() <= 3.5){
                     listOfRhythms.set(9,listOfRhythms.get(9)+1);
                 }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 5.0){
                     listOfRhythms.set(10,listOfRhythms.get(10)+1);
