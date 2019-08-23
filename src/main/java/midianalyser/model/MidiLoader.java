@@ -196,7 +196,9 @@ public class MidiLoader{
                                 if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
                                     if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
-                                            checkQuarter(quarter, keySig, majorKey);
+                                            if(currQuarterTick != event.getTick()){
+                                                checkQuarter(quarter, keySig, majorKey);
+                                            }    
                                         }
                                     }
                                 }
@@ -229,7 +231,10 @@ public class MidiLoader{
                                         if(! metaMessages.contains(event)){
                                             addKeySig(keySig, majorKey);
                                         }
-                                        checkQuarter(quarter, oldKeySig, oldMajorKey);
+                                        if(currQuarterTick != event.getTick()){
+                                            checkQuarter(quarter, oldKeySig, oldMajorKey);
+                                        }
+
                                     }
 
                                 }
