@@ -118,21 +118,6 @@ public class MidiLoader{
                             int key = sm.getData1();
                             MidiNote note = new MidiNote(key,event.getTick(),keySig);
 
-                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
-                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
-
-                                        if(event.getTick() >= currQuarterTick + PPQ ){
-                                            currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
-                                            checkQuarter(quarter, keySig, majorKey);
-                                        }
-
-                                    }
-                                }
-                            }
-
-
-
                             simulNotes.add(note);
                             quarter.add(note);
 
@@ -154,6 +139,19 @@ public class MidiLoader{
                                     }
                                     System.out.println("length" + simulNotes.get(n).length());
                                     simulNotes.remove(n);
+                                }
+                            }
+
+                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
+                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+
+                                        if(events.get(i+1).getTick() >= currQuarterTick + PPQ ){
+                                            currQuarterTick = events.get(i+1).getTick()-((events.get(i+1).getTick()-PPQChangeTick) % PPQ);
+                                            checkQuarter(quarter, keySig, majorKey);
+                                        }
+
+                                    }
                                 }
                             }
 
@@ -188,6 +186,7 @@ public class MidiLoader{
                         }else if(type == MidiEventType.TIME_SIGNATURE.type()){
                             timeSigNumerator = mm.getData()[0];
                             timeSigDenominator = (int) Math.pow(2,mm.getData()[1]);
+                            PPQ = sequence.getResolution();
                             if(timeSigDenominator == 8) PPQ = (int) Math.round(PPQ* 1.5);
                             //System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
                             PPQChangeTick = event.getTick();
@@ -198,7 +197,7 @@ public class MidiLoader{
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
                                             if(currQuarterTick != event.getTick()){
                                                 checkQuarter(quarter, keySig, majorKey);
-                                            }    
+                                            }
                                         }
                                     }
                                 }
