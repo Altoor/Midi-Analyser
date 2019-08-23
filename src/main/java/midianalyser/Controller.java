@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -58,6 +59,13 @@ public class Controller {
 
     @FXML
     private GridPane majorTable;
+
+    @FXML
+    private Label folderName;
+
+    @FXML
+    private Label fileAmount;
+
 
     @FXML
     private CheckComboBox<String> timeFilter;
@@ -200,5 +208,14 @@ public class Controller {
 
     public GridPane getTimeSigTable(){
         return timeSigTable;
+    }
+
+
+    public Label getFolderName(){
+        return folderName;
+    }
+
+    public Label getFileAmount(){
+        return fileAmount;
     }
 }

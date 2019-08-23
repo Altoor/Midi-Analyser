@@ -66,13 +66,19 @@ public class MidiLoader{
         this.mapOfTimeSigs = mapOfTimeSigs;
     }
 
-    public void setDirectory(File midiDirectory) throws IOException{
+    public int setDirectory(File midiDirectory) throws IOException{
+        int fileAmount = 0;
+
         this.midiDirectory = midiDirectory;
         midiFiles = new ArrayList<>(FileUtils.listFiles(midiDirectory,new RegexFileFilter("^(.*.mid)"),DirectoryFileFilter.DIRECTORY));
         for(File file : midiFiles){
             System.out.println(file.getName());
+            fileAmount ++;
         }
         clearAnalytics();
+
+        return fileAmount;
+
     }
 
     public void countAll(){

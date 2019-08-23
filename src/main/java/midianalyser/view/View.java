@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.Label;
 import javafx.scene.text.*;
 
 import javafx.collections.ObservableList;
@@ -25,6 +26,8 @@ public class View {
 	private GridPane dactylTable;
 	private GridPane keyTable;
 	private GridPane timeSigTable;
+	private Label folderName;
+	private Label fileAmount;
 
 
 	public View(Controller controller, Stage primaryStage) throws IOException {
@@ -37,7 +40,14 @@ public class View {
 		this.dactylTable = controller.getDactylTable();
 		this.keyTable = controller.getKeyTable();
 		this.timeSigTable = controller.getTimeSigTable();
+		this.folderName = controller.getFolderName();
+		this.fileAmount = controller.getFileAmount();
 		primaryStage.show();
+	}
+
+	public void updateLabels(String folderName, int fileAmount){
+		this.folderName.setText(""+folderName);
+		this.fileAmount.setText(fileAmount + " files");
 	}
 
 	public void updateGrids(ArrayList<Integer> toneList, ArrayList<Integer> rhythmList, TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, TreeMap<String, Integer> mapOfKeys, TreeMap<String, Integer> mapOfTimeSigs){

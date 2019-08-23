@@ -39,7 +39,8 @@ public class Model{
 
 
     public void setDirectory(File dir) throws IOException{
-        midiLoader.setDirectory(dir);
+        int fileAmount = midiLoader.setDirectory(dir);
+        view.updateLabels(dir.getName().substring(dir.getName().lastIndexOf("/") + 1),fileAmount);
     }
 
     public void onToneButton(){

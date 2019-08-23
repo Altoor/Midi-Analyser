@@ -104,6 +104,16 @@
                         <Color blue="0.624" green="0.624" red="0.624" fx:id="x2211" />
                      </textFill>
                   </Label>
+                  <Label fx:id="fileAmount" alignment="CENTER" layoutX="15.0" layoutY="327.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" textAlignment="CENTER" wrapText="false">
+                     <font>
+                        <Font size="16.0" fx:id="x131" />
+                     </font>
+                  </Label>
+                  <Label fx:id="folderName" alignment="CENTER" layoutX="14.0" layoutY="300.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" textAlignment="CENTER" wrapText="false">
+                     <font>
+                        <Font size="16.0" fx:id="x13" />
+                     </font>
+                  </Label>
           </children>
         </AnchorPane>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
