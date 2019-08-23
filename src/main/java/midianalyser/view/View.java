@@ -42,18 +42,23 @@ public class View {
 
 	public void updateGrids(ArrayList<Integer> toneList, ArrayList<Integer> rhythmList, TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, TreeMap<String, Integer> mapOfKeys, TreeMap<String, Integer> mapOfTimeSigs){
 		Text text = new Text();
+		int total = 0;
 		text.setTextAlignment(TextAlignment.CENTER);
 
 		//toneTable
 		toneTable.getChildren().clear();
+		for(int i = 0; i < 12; i++){
+			total+=toneList.get(i);
+		}
 		for(int i = 0; i < 12; i++){
 			//the tone Step
 			text = new Text(""+i);
 			toneTable.setConstraints(text, i, 0);
 			toneTable.getChildren().add(text);
 
+			double pct = (Math.round(((double) toneList.get(i)/(double) total*100)*100.0)/100.0);
 			//the # of tones
-			text = new Text("" +toneList.get(i));
+			text = new Text("" + toneList.get(i) + "\n" + pct +"%");
 			toneTable.setConstraints(text, i, 1);
 
 			toneTable.getChildren().add(text);
@@ -63,28 +68,34 @@ public class View {
 		rhythmTable.getChildren().clear();
 		rhythmTable1.getChildren().clear();
 		rhythmTable2.getChildren().clear();
+		total = 0;
+		for(int i = 0; i < 26; i++){
+			total+= rhythmList.get(i);
+		}
 		for(int i = 0; i < 10; i++){
-
-			text = new Text("" +rhythmList.get(i));
+			double pct = (Math.round(((double) rhythmList.get(i)/(double) total*100)*100.0)/100.0);
+			text = new Text("" +rhythmList.get(i)+ "\n" + pct +"%");
 			rhythmTable.setConstraints(text, 1, i);
 			rhythmTable.getChildren().add(text);
 
-			text = new Text("" +rhythmList.get(i+10));
+			pct = (Math.round(((double) rhythmList.get(i+10)/(double) total*100)*100.0)/100.0);
+			text = new Text("" +rhythmList.get(i+10)+ "\n" + pct +"%");
 			rhythmTable1.setConstraints(text, 1, i);
 			rhythmTable1.getChildren().add(text);
 
+			pct = (Math.round(((double) rhythmList.get(i+20)/(double) total*100)*100.0)/100.0);
 			if(i+20 < rhythmList.size()){
-				text = new Text("" +rhythmList.get(i+20));
+				text = new Text("" +rhythmList.get(i+20)+ "\n" + pct +"%");
 				rhythmTable2.setConstraints(text, 1, i);
 				rhythmTable2.getChildren().add(text);
 			}
 
 		}
 
-		//rhytmTable
+		//trochaicTable
 		trochaicTable.getChildren().clear();
 		int q = 0;
-		int total = 0;
+		total = 0;
 		int superTotal = 0;
 		ArrayList<Integer> stepsFromRootTotal = new ArrayList<Integer>();
 		for(int i = 0; i < 7; i++){
@@ -162,7 +173,7 @@ public class View {
 
 
 
-
+		//dactylTable
 		dactylTable.getChildren().clear();
 		q = 0;
 		total = 0;

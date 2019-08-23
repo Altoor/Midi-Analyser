@@ -304,9 +304,9 @@ public class MidiLoader{
                 listOfRhythms.set(28,listOfRhythms.get(28)+1);
                 if(quarter.get(0).length() >= 2.5 && quarter.get(0).length() <= 3.5 && quarter.get(1).length() >= 2.5 &&  quarter.get(1).length() <= 3.5 && quarter.get(2).length() >= 2.5 &&  quarter.get(2).length() <= 3.5){
                     listOfRhythms.set(9,listOfRhythms.get(9)+1);
-                }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 4.5 && quarter.get(2).length() <= 3){
+                }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 4.5 && quarter.get(2).length() <= 3.0){
                     listOfRhythms.set(10,listOfRhythms.get(10)+1);
-                }else if(quarter.get(0).length() >= 4.5 && quarter.get(1).length() <= 2.0 && quarter.get(2).length() <= 3){
+                }else if(quarter.get(0).length() >= 4.5 && quarter.get(1).length() <= 2.0 && quarter.get(2).length() <= 3.0){
                     listOfRhythms.set(11,listOfRhythms.get(11)+1);
                 }else if(quarter.get(0).length() <= 3  && quarter.get(1).length() <= 2.0 && quarter.get(2).length() >= 4.5){
                     listOfRhythms.set(12,listOfRhythms.get(12)+1);
