@@ -39,8 +39,7 @@ public class Model{
 
 
     public void setDirectory(File dir) throws IOException{
-        int fileAmount = midiLoader.setDirectory(dir);
-        view.updateLabels(dir.getName().substring(dir.getName().lastIndexOf("/") + 1),fileAmount);
+        midiLoader.setDirectory(dir);
     }
 
     public void onToneButton(){
@@ -54,7 +53,11 @@ public class Model{
         mapOfKeys = midiLoader.mapOfKeys();
         mapOfTimeSigs = midiLoader.mapOfTimeSigs();
 
+        File dir = midiLoader.getMidiDirectory();
+        int filesChecked = midiLoader.getFilesChecked();
+
         view.updateGrids(toneList, rhythmList, mapOfTrochees, mapOfDactyles, mapOfKeys, mapOfTimeSigs);
+        view.updateLabels(dir.getName().substring(dir.getName().lastIndexOf("/") + 1),filesChecked);
     }
 
     public ArrayList<Integer> getToneList(){

@@ -41,6 +41,7 @@ public class MidiLoader{
     private TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles;
     private TreeMap<String, Integer> mapOfKeys;
     private TreeMap<String, Integer> mapOfTimeSigs;
+    private int filesChecked;
 
     private ObservableList<String> filterTimeSig = FXCollections.observableArrayList();
     private ObservableList<String> filterKeySig = FXCollections.observableArrayList();
@@ -66,23 +67,21 @@ public class MidiLoader{
         this.mapOfTimeSigs = mapOfTimeSigs;
     }
 
-    public int setDirectory(File midiDirectory) throws IOException{
-        int fileAmount = 0;
+    public void setDirectory(File midiDirectory) throws IOException{
 
         this.midiDirectory = midiDirectory;
         midiFiles = new ArrayList<>(FileUtils.listFiles(midiDirectory,new RegexFileFilter("^(.*.mid)"),DirectoryFileFilter.DIRECTORY));
         for(File file : midiFiles){
             System.out.println(file.getName());
-            fileAmount ++;
         }
         clearAnalytics();
-
-        return fileAmount;
 
     }
 
     public void countAll(){
+        filesChecked = 0;
         for(File file : midiFiles){
+            boolean countedfile = false;
             try{
                 sequence = MidiSystem.getSequence(file);
             }catch(IOException | InvalidMidiDataException e){
@@ -155,6 +154,7 @@ public class MidiLoader{
                                         if(events.get(i+1).getTick() >= currQuarterTick + PPQ ){
                                             currQuarterTick = events.get(i+1).getTick()-((events.get(i+1).getTick()-PPQChangeTick) % PPQ);
                                             checkQuarter(quarter, keySig, majorKey);
+                                            countedfile = true;
                                         }
 
                                     }
@@ -176,6 +176,7 @@ public class MidiLoader{
                                 if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
                                     if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
                                         checkQuarter(quarter, keySig, majorKey);
+                                        countedfile = true;
                                     }
                                 }
                             }
@@ -203,6 +204,7 @@ public class MidiLoader{
                                         if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
                                             if(currQuarterTick != event.getTick()){
                                                 checkQuarter(quarter, keySig, majorKey);
+                                                countedfile = true;
                                             }
                                         }
                                     }
@@ -238,6 +240,7 @@ public class MidiLoader{
                                         }
                                         if(currQuarterTick != event.getTick()){
                                             checkQuarter(quarter, oldKeySig, oldMajorKey);
+                                            countedfile = true;
                                         }
 
                                     }
@@ -252,6 +255,7 @@ public class MidiLoader{
                     }
                 }
             }
+            if(countedfile) filesChecked ++;
         }
     }
 
@@ -585,6 +589,14 @@ public class MidiLoader{
 
     public TreeMap<String, Integer> mapOfTimeSigs(){
         return mapOfTimeSigs;
+    }
+
+    public int getFilesChecked(){
+        return filesChecked;
+    }
+
+    public File getMidiDirectory(){
+        return midiDirectory;
     }
 
     public void filterTimeSig(ObservableList<String> items){
