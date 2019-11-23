@@ -1,5 +1,11 @@
 package midianalyser.model;
 
+/**
+ * @author Sebastian Bové Wagner <Sebastian@pda.dk>
+ * @version 1.0
+ */
+
+
 public enum MidiEventType {
 
     TRACKNAME       (0x3),

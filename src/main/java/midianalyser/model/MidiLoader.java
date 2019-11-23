@@ -15,8 +15,6 @@ import javax.sound.midi.MetaMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.InvalidMidiDataException;
 
-import java.util.regex.Pattern;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.*;
 
@@ -48,7 +46,7 @@ public class MidiLoader{
     private ObservableList<String> filterMajorSig = FXCollections.observableArrayList();
 
 
-    public MidiLoader(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, TreeMap<String, Integer> mapOfKeys, TreeMap<String, Integer> mapOfTimeSigs){
+    public MidiLoader(final ArrayList<Integer> listOfTones, final ArrayList<Integer> listOfRhythms, final TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, final TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, final TreeMap<String, Integer> mapOfKeys, final TreeMap<String, Integer> mapOfTimeSigs){
         this.listOfTones = listOfTones;
         this.listOfRhythms = listOfRhythms;
         this.mapOfTrochees = mapOfTrochees;
@@ -58,7 +56,7 @@ public class MidiLoader{
 
     }
 
-    public void setLists(ArrayList<Integer> listOfTones, ArrayList<Integer> listOfRhythms, TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, TreeMap<String, Integer> mapOfKeys, TreeMap<String, Integer> mapOfTimeSigs){
+    public void setLists(final ArrayList<Integer> listOfTones, final ArrayList<Integer> listOfRhythms, final TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, final TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, final TreeMap<String, Integer> mapOfKeys, final TreeMap<String, Integer> mapOfTimeSigs){
         this.listOfTones = listOfTones;
         this.listOfRhythms = listOfRhythms;
         this.mapOfTrochees = mapOfTrochees;
@@ -67,11 +65,11 @@ public class MidiLoader{
         this.mapOfTimeSigs = mapOfTimeSigs;
     }
 
-    public void setDirectory(File midiDirectory) throws IOException{
+    public void setDirectory(final File midiDirectory) throws IOException{
 
         this.midiDirectory = midiDirectory;
         midiFiles = new ArrayList<>(FileUtils.listFiles(midiDirectory,new RegexFileFilter("^(.*.mid)"),DirectoryFileFilter.DIRECTORY));
-        for(File file : midiFiles){
+        for(final File file : midiFiles){
             System.out.println(file.getName());
         }
         clearAnalytics();
@@ -80,7 +78,7 @@ public class MidiLoader{
 
     public void countAll(){
         filesChecked = 0;
-        for(File file : midiFiles){
+        for(final File file : midiFiles){
             boolean countedfile = false;
             try{
                 sequence = MidiSystem.getSequence(file);
@@ -89,107 +87,93 @@ public class MidiLoader{
                 continue;
             }
 
-            int trackNumber = 0;
-            ArrayList<MidiEvent> metaMessages = new ArrayList();
+            final ArrayList<MidiEvent> metaMessages = new ArrayList<MidiEvent>();
 
-            for (Track track :  sequence.getTracks()) {
-                int tempo = 500000;
+            for (final Track track : sequence.getTracks()) {
                 int PPQ = sequence.getResolution();
-                long currQuarterTick =0; // round down to nearest tick representing a quarter
-                long PPQChangeTick =0; // The tick of the last played note.
+                long currQuarterTick = 0; // round down to nearest tick representing a quarter
+                long PPQChangeTick = 0; // The tick of the last played note.
                 int keySig = 0;
                 boolean majorKey = true;
                 int timeSigNumerator = 4;
                 int timeSigDenominator = 4;
 
-                trackNumber++;
-                for(MidiEvent me : metaMessages){
+                for (final MidiEvent me : metaMessages) {
                     track.add(me);
                 }
 
-                ArrayList<MidiNote> simulNotes = new ArrayList<MidiNote>();
-                ArrayList<MidiNote> quarter = new ArrayList<MidiNote>();
-                ArrayList<MidiEvent> events = sortTrack(track);
+                final ArrayList<MidiNote> simulNotes = new ArrayList<MidiNote>();
+                final ArrayList<MidiNote> quarter = new ArrayList<MidiNote>();
+                final ArrayList<MidiEvent> events = sortTrack(track);
 
-                for (int i=0; i < events.size(); i++) {
-                    MidiEvent event = events.get(i);
-                    MidiMessage message = event.getMessage();
-                    //System.out.print(" @" + event.getTick());
+                for (int i = 0; i < events.size(); i++) {
+                    final MidiEvent event = events.get(i);
+                    final MidiMessage message = event.getMessage();
+                    // System.out.print(" @" + event.getTick());
 
                     if (message instanceof ShortMessage) {
-                        ShortMessage sm = (ShortMessage) message;
-                        //System.out.println(sm.getCommand());
+                        final ShortMessage sm = (ShortMessage) message;
+                        // System.out.println(sm.getCommand());
+
                         if (sm.getCommand() == NOTE_ON && sm.getData2() != 0) {
-                            int key = sm.getData1();
-                            MidiNote note = new MidiNote(key,event.getTick(),keySig);
+                            final int key = sm.getData1();
+                            final MidiNote note = new MidiNote(key, event.getTick(), keySig);
 
                             simulNotes.add(note);
                             quarter.add(note);
 
                         } else if (sm.getCommand() == NOTE_OFF || sm.getCommand() == NOTE_ON && sm.getData2() == 0) {
-                            int key = sm.getData1();
+                            final int key = sm.getData1();
 
-                            for(int n = 0; n < simulNotes.size(); n++){
-                                if(simulNotes.get(n).note() == key){
-                                    int lengthInTicks = (int) (event.getTick() - simulNotes.get(n).startTick());
+                            for (int n = 0; n < simulNotes.size(); n++) {
+                                if (simulNotes.get(n).note() == key) {
+                                    final int lengthInTicks = (int) (event.getTick() - simulNotes.get(n).startTick());
                                     System.out.println("note: " + key);
                                     System.out.println("lengthInTicks: " + lengthInTicks + ". PPQ: " + PPQ);
                                     simulNotes.get(n).setLength(0);
-                                    for(double l = 0; l < 32; l +=0.25){
-                                        if(lengthInTicks <= (int) ((double) PPQ/ (double) l)-((double) PPQ/ 20.0)){
+
+                                    for (double l = 0; l < 32; l += 0.25) {
+                                        if (lengthInTicks <= (int) ((double) PPQ / (double) l)
+                                                - ((double) PPQ / 20.0)) {
                                             simulNotes.get(n).setLength(l);
-                                        }else{
+                                        } else {
                                             break;
                                         }
                                     }
+
                                     System.out.println("length" + simulNotes.get(n).length());
                                     simulNotes.remove(n);
                                 }
                             }
 
-                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
-                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
+                            if(checkFilter( timeSigNumerator, timeSigDenominator,  keySig, majorKey)){
 
-                                        if(events.get(i+1).getTick() >= currQuarterTick + PPQ ){
-                                            currQuarterTick = events.get(i+1).getTick()-((events.get(i+1).getTick()-PPQChangeTick) % PPQ);
-                                            checkQuarter(quarter, keySig, majorKey);
-                                            countedfile = true;
-                                        }
+                                if (events.get(i + 1).getTick() >= currQuarterTick + PPQ) {
+                                    currQuarterTick = events.get(i + 1).getTick()
+                                            - ((events.get(i + 1).getTick() - PPQChangeTick) % PPQ);
 
-                                    }
+                                    checkQuarter(quarter, keySig, majorKey);
+                                    countedfile = true;
                                 }
                             }
-
                         }
-                    }else if(message instanceof MetaMessage) {
+                    } else if (message instanceof MetaMessage) {
 
-                        MetaMessage mm = (MetaMessage) message;
-                        int type = mm.getType();
+                        final MetaMessage mm = (MetaMessage) message;
+                        final int type = mm.getType();
 
                         System.out.println(type);
 
-                        if(type == MidiEventType.TRACKNAME.type()){
+                        if (type == MidiEventType.TRACKNAME.type()) {
 
-                        }else if(type == MidiEventType.END_OF_TRACK.type()){
-                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
-                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
-                                        checkQuarter(quarter, keySig, majorKey);
-                                        countedfile = true;
-                                    }
-                                }
+                        } else if (type == MidiEventType.END_OF_TRACK.type()) {
+                            if(checkFilter( timeSigNumerator, timeSigDenominator,  keySig, majorKey)){
+                                checkQuarter(quarter, keySig, majorKey);
+                                countedfile = true;
                             }
 
-
-                        }else if(type == MidiEventType.SET_TEMPO.type()){
-                            int out = 0;
-                            for(byte bt : mm.getData()){
-                                out += bt;
-                                out <<= 8;
-                            }
-                            tempo = out;
-
+                        } else if (type == MidiEventType.SET_TEMPO.type()) {
+                            //TODO: implement
                         }else if(type == MidiEventType.TIME_SIGNATURE.type()){
                             timeSigNumerator = mm.getData()[0];
                             timeSigDenominator = (int) Math.pow(2,mm.getData()[1]);
@@ -198,57 +182,40 @@ public class MidiLoader{
                             //System.out.println("timeSig :" +timeSigNumerator + "/" + timeSigDenominator);
                             PPQChangeTick = event.getTick();
                             currQuarterTick = event.getTick()-((event.getTick()-PPQChangeTick) % PPQ);
+                            
                             if(event.getTick()> 0){
-                                if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
-                                        if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
-                                            if(currQuarterTick != event.getTick()){
-                                                checkQuarter(quarter, keySig, majorKey);
-                                                countedfile = true;
-                                            }
-                                        }
+                                if(checkFilter( timeSigNumerator, timeSigDenominator,  keySig, majorKey)){
+                                    if(currQuarterTick != event.getTick()){
+                                        checkQuarter(quarter, keySig, majorKey);
+                                        countedfile = true;
                                     }
                                 }
                             }
 
 
                             if(! metaMessages.contains(event)){
-                                if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                    if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
-                                        if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
-
-                                            addTimeSig(timeSigNumerator, timeSigDenominator);
-
-                                        }
-                                    }
+                                if(checkFilter( timeSigNumerator, timeSigDenominator,  keySig, majorKey)){
+                                    addTimeSig(timeSigNumerator, timeSigDenominator);
                                 }
 
                             }
 
                         }else if(type == MidiEventType.KEY_SIGNATURE.type()){
-                            int oldKeySig = keySig;
-                            boolean oldMajorKey = majorKey;
+                            final int oldKeySig = keySig;
+                            final boolean oldMajorKey = majorKey;
 
                             keySig = mm.getData()[0];
                             if(mm.getData()[1] != 0) majorKey = false;
                             System.out.println("keySig :" +keySig + "major" + majorKey);
-                            if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
-                                if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig,majorKey)))){
-                                    if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") &&  majorKey) || (filterMajorSig.contains("minor") &&  !majorKey)){
-                                        if(! metaMessages.contains(event)){
-                                            addKeySig(keySig, majorKey);
-                                        }
-                                        if(currQuarterTick != event.getTick()){
-                                            checkQuarter(quarter, oldKeySig, oldMajorKey);
-                                            countedfile = true;
-                                        }
-
-                                    }
-
+                            if(checkFilter( timeSigNumerator, timeSigDenominator,  keySig, majorKey)){
+                                if(! metaMessages.contains(event)){
+                                    addKeySig(keySig, majorKey);
+                                }
+                                if(currQuarterTick != event.getTick()){
+                                    checkQuarter(quarter, oldKeySig, oldMajorKey);
+                                    countedfile = true;
                                 }
                             }
-
-
                         }
                         metaMessages.add(event);
 
@@ -259,8 +226,22 @@ public class MidiLoader{
         }
     }
 
-    public ArrayList<MidiEvent> sortTrack(Track track){
-        ArrayList<MidiEvent> eventlist = new ArrayList();
+    public boolean checkFilter(int timeSigNumerator,int timeSigDenominator, int keySig, boolean majorKey){
+        boolean filterTrue = false;
+
+        if(filterTimeSig.isEmpty() || filterTimeSig.contains(timeSigNumerator+"/"+timeSigDenominator)){
+            if(filterKeySig.isEmpty() || filterKeySig.contains(keyToString(rootNote(keySig, majorKey)))){
+                if(filterMajorSig.isEmpty() || (filterMajorSig.contains("major") && majorKey) || (filterMajorSig.contains("minor") && !majorKey)){
+                    filterTrue = true;
+                }
+            }
+        }
+
+        return filterTrue;
+    }
+
+    public ArrayList<MidiEvent> sortTrack(final Track track){
+        final ArrayList<MidiEvent> eventlist = new ArrayList<MidiEvent>();
         for (int i=0; i < track.size(); i++) {
             eventlist.add(track.get(i));
         }
@@ -269,7 +250,7 @@ public class MidiLoader{
         return eventlist;
     }
 
-    public void checkQuarter(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
+    public void checkQuarter(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
         Collections.sort(quarter, new SortByStartTick());
         System.out.println("notes in quarter: " +quarter.size());
         rhythmCheck(quarter);
@@ -278,8 +259,8 @@ public class MidiLoader{
         }else if(quarter.size() ==3){
             DactylCheck(quarter, keySig, majorKey);
         }
-        for(MidiNote note : quarter){
-            int noteFromKey = keySigCheck(note.note(), keySig, majorKey);
+        for(final MidiNote note : quarter){
+            final int noteFromKey = keySigCheck(note.note(), keySig, majorKey);
             listOfTones.set(noteFromKey,listOfTones.get(noteFromKey)+1);
         }
 
@@ -289,7 +270,7 @@ public class MidiLoader{
 
     }
 
-    public void rhythmCheck(ArrayList<MidiNote> quarter){
+    public void rhythmCheck(final ArrayList<MidiNote> quarter){
 
         switch(quarter.size()){
             case 1:
@@ -371,24 +352,24 @@ public class MidiLoader{
 
     }
 
-    public void TrochaicCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
+    public void TrochaicCheck(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
         int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
-        int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
+        final int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
         diff =  Math.abs(diff)+1;
         if(diff>=8) return;
 
-        String key = 1+ "" + Math.abs(diff)  + sharpNotater;
+        final String key = 1+ "" + Math.abs(diff)  + sharpNotater;
 
         if(mapOfTrochees.get(key) == null){
-            HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
+            final HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
             newHM.put(keyChromatic, 1);
             mapOfTrochees.put(key,newHM);
 
         }else{
             if(mapOfTrochees.get(key).get(keyChromatic) != null){
-                int count = mapOfTrochees.get(key).get(keyChromatic);
+                final int count = mapOfTrochees.get(key).get(keyChromatic);
                 mapOfTrochees.get(key).put(keyChromatic,count+1);
             }else{
                 mapOfTrochees.get(key).put(keyChromatic,1);
@@ -399,10 +380,10 @@ public class MidiLoader{
 
     }
 
-    public void DactylCheck(ArrayList<MidiNote> quarter, int keySig, boolean majorKey){
+    public void DactylCheck(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
         int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note(), keySig, majorKey);
-        int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
+        final int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
         String sharpNotater1 = "";
         String sharpNotater2= "";
         if (diff1< 0) sharpNotater1 = ".";
@@ -412,16 +393,16 @@ public class MidiLoader{
 
         if(diff1>=8 ||diff2>=8 ) return;
 
-        String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
+        final String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
 
         if(mapOfDactyles.get(key) == null){
-            HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
+            final HashMap<Integer, Integer> newHM = new HashMap<Integer, Integer>();
             newHM.put(keyChromatic, 1);
             mapOfDactyles.put(key,newHM);
 
         }else{
             if(mapOfDactyles.get(key).get(keyChromatic) != null){
-                int count = mapOfDactyles.get(key).get(keyChromatic);
+                final int count = mapOfDactyles.get(key).get(keyChromatic);
                 mapOfDactyles.get(key).put(keyChromatic,count+1);
             }else{
                 mapOfDactyles.get(key).put(keyChromatic,1);
@@ -432,7 +413,7 @@ public class MidiLoader{
 
     }
 
-    public String keyToString(int keyIn){
+    public String keyToString(final int keyIn){
         String key = "";
         switch(keyIn){
             case 0: key = "c"; break;
@@ -453,7 +434,7 @@ public class MidiLoader{
         return key;
     }
 
-    public int rootNote(int keySig, boolean majorKey){
+    public int rootNote(final int keySig, final boolean majorKey){
         int root = 0;
         if(majorKey){
             switch(keySig){
@@ -493,7 +474,7 @@ public class MidiLoader{
         return root;
     }
 
-    public void addKeySig(int keySig, boolean majorKey){
+    public void addKeySig(final int keySig, final boolean majorKey){
         String key = "" +keyToString(rootNote(keySig,majorKey));
         if(majorKey){
             key += " major";
@@ -508,8 +489,8 @@ public class MidiLoader{
         }
     }
 
-    public void addTimeSig(int timeSigNumerator, int timeSigDenominator){
-        String key = timeSigNumerator + "/" + timeSigDenominator;
+    public void addTimeSig(final int timeSigNumerator, final int timeSigDenominator){
+        final String key = timeSigNumerator + "/" + timeSigDenominator;
         if(mapOfTimeSigs.get(key) == null){
             mapOfTimeSigs.put(key,1);
         }else{
@@ -518,9 +499,9 @@ public class MidiLoader{
 
     }
 
-    public int keySigCheck(int note, int keySig, boolean majorKey){
+    public int keySigCheck(int note, final int keySig, final boolean majorKey){
 
-        int root =rootNote(keySig,majorKey);
+        final int root =rootNote(keySig,majorKey);
         note%= 12;
         if(note < 0) note += 12;
         if(note < root) note += 12;
@@ -528,7 +509,7 @@ public class MidiLoader{
 
     }
 
-    public int chromaticToDiatonic(int note, int keySig,boolean majorKey){
+    public int chromaticToDiatonic(final int note, final int keySig,final boolean majorKey){
         int out = 1;
         switch(keySigCheck(note, keySig, majorKey)){
             case 0: out = 1; break;
@@ -550,7 +531,7 @@ public class MidiLoader{
     }
 
 
-    public int halfToneToTone(int firstNote, int secondNote, int keySig, boolean majorKey){
+    public int halfToneToTone(final int firstNote, final int secondNote, final int keySig, final boolean majorKey){
         int firstTone = 0;
         int secondTone = 0;
 
@@ -599,15 +580,15 @@ public class MidiLoader{
         return midiDirectory;
     }
 
-    public void filterTimeSig(ObservableList<String> items){
+    public void filterTimeSig(final ObservableList<String> items){
         this.filterTimeSig = items;
     }
 
-    public void filterKeySig(ObservableList<String> items){
+    public void filterKeySig(final ObservableList<String> items){
         this.filterKeySig = items;
     }
 
-    public void filterMajorSig(ObservableList<String> items){
+    public void filterMajorSig(final ObservableList<String> items){
         this.filterMajorSig = items;
     }
 
@@ -616,7 +597,7 @@ public class MidiLoader{
 
 class SortEventByTick implements Comparator<MidiEvent>{
 
-        public int compare(MidiEvent a, MidiEvent b){
+        public int compare(final MidiEvent a, final MidiEvent b){
             int out = 0;
             if(a.getTick() < b.getTick()){
                 out = -1;
