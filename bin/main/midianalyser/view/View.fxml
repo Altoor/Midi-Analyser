@@ -217,12 +217,7 @@
                                           </ImageView>
                                           <ImageView GridPane.rowIndex="8">
                                              <image>
-                                                <Image url="@Note%20PNG's/A_0008_Layer-12.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView GridPane.rowIndex="9">
-                                             <image>
-                                                <Image url="@Note%20PNG's/A_0009_Layer-13.png" />
+                                                <Image url="@../../../../../Rhythms/A_0008_Layer-12.png" />
                                              </image>
                                           </ImageView>
                                        </children>
@@ -244,6 +239,13 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
+                                       <children>
+                                          <ImageView GridPane.rowIndex="9">
+                                             <image>
+                                                <Image url="@../../../../../Rhythms/A_0009_Layer-13.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
                                     </GridPane>
                                     <GridPane alignment="CENTER" layoutX="203.0" layoutY="8.0" prefHeight="506.0" prefWidth="105.0">
                                        <columnConstraints>
@@ -403,11 +405,6 @@
                                           </Label>
                                           <ImageView GridPane.rowIndex="4">
                                              <image>
-                                                <Image url="@../../../../../Rhythms/A_0024_Layer-28.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView GridPane.rowIndex="5">
-                                             <image>
                                                 <Image url="@../../../../../Rhythms/A_0025_Layer-29.png" />
                                              </image>
                                           </ImageView>
@@ -430,6 +427,13 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
+                                       <children>
+                                          <ImageView GridPane.rowIndex="5">
+                                             <image>
+                                                <Image url="@../../../../../Rhythms/A_0024_Layer-28.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
                                     </GridPane>
                                  </children>
                               </AnchorPane>

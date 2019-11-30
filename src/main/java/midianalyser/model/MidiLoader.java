@@ -17,7 +17,6 @@ import javax.sound.midi.InvalidMidiDataException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.*;
-
 import java.io.IOException;
 
 
@@ -68,7 +67,7 @@ public class MidiLoader{
     public void setDirectory(final File midiDirectory) throws IOException{
 
         this.midiDirectory = midiDirectory;
-        midiFiles = new ArrayList<>(FileUtils.listFiles(midiDirectory,new RegexFileFilter("^(.*.mid)"),DirectoryFileFilter.DIRECTORY));
+        midiFiles = new ArrayList<File>( FileUtils.listFiles(midiDirectory,new RegexFileFilter("^(.*.mid)"), DirectoryFileFilter.DIRECTORY));
         for(final File file : midiFiles){
             System.out.println(file.getName());
         }
@@ -76,8 +75,10 @@ public class MidiLoader{
 
     }
 
-    public void countAll(){
+
+    public ArrayList<MidiNote> count(int quartersToCheck){
         filesChecked = 0;
+        int quartersChecked = 0;
         for(final File file : midiFiles){
             boolean countedfile = false;
             try{
@@ -89,7 +90,8 @@ public class MidiLoader{
 
             final ArrayList<MidiEvent> metaMessages = new ArrayList<MidiEvent>();
 
-            for (final Track track : sequence.getTracks()) {
+            trackLoop:
+            for (final Track track : sequence.getTracks()) { 
                 int PPQ = sequence.getResolution();
                 long currQuarterTick = 0; // round down to nearest tick representing a quarter
                 long PPQChangeTick = 0; // The tick of the last played note.
@@ -149,6 +151,12 @@ public class MidiLoader{
                             if(checkFilter( timeSigNumerator, timeSigDenominator,  keySig, majorKey)){
 
                                 if (events.get(i + 1).getTick() >= currQuarterTick + PPQ) {
+
+                                    
+                                    //For Testing purposes
+                                    if(quartersToCheck >= 1 && quartersChecked >= quartersToCheck && quarter.size() > 0) return quarter;
+                                    if(quarter.size() > 0) quartersChecked ++;
+
                                     currQuarterTick = events.get(i + 1).getTick()
                                             - ((events.get(i + 1).getTick() - PPQChangeTick) % PPQ);
 
@@ -224,6 +232,7 @@ public class MidiLoader{
             }
             if(countedfile) filesChecked ++;
         }
+        return null;
     }
 
     public boolean checkFilter(int timeSigNumerator,int timeSigDenominator, int keySig, boolean majorKey){
@@ -253,7 +262,13 @@ public class MidiLoader{
     public void checkQuarter(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
         Collections.sort(quarter, new SortByStartTick());
         System.out.println("notes in quarter: " +quarter.size());
-        rhythmCheck(quarter);
+        try {
+            int rythmType = rhythmCheck(quarter);
+            listOfRhythms.set(rythmType,listOfRhythms.get(rythmType)+1);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
         if(quarter.size() ==2){
             TrochaicCheck(quarter, keySig, majorKey);
         }else if(quarter.size() ==3){
@@ -270,95 +285,118 @@ public class MidiLoader{
 
     }
 
-    public void rhythmCheck(final ArrayList<MidiNote> quarter){
+    public int rhythmCheck(final ArrayList<MidiNote> quarter){
 
         switch(quarter.size()){
             case 1:
-                listOfRhythms.set(0,listOfRhythms.get(0)+1);
                 listOfRhythms.set(26,listOfRhythms.get(26)+1);
-                break;
+                return 0;
             case 2:
                 listOfRhythms.set(27,listOfRhythms.get(27)+1);
                 if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() <= 2.0){
-                    listOfRhythms.set(1,listOfRhythms.get(1)+1);
+                    //listOfRhythms.set(1,listOfRhythms.get(1)+1);
+                    return 1;
                 }else if(quarter.get(0).length() <= 2 && quarter.get(1).length() >= 3.0){
-                    listOfRhythms.set(5,listOfRhythms.get(5)+1);
+                    //listOfRhythms.set(5,listOfRhythms.get(5)+1);
+                    return 5;
                 }else if(quarter.get(0).length() >= 3.0 && quarter.get(1).length() <= 2){
-                    listOfRhythms.set(6,listOfRhythms.get(6)+1);
+                    //listOfRhythms.set(6,listOfRhythms.get(6)+1);
+                    return 6;
                 }else if(quarter.get(0).length() <= 1.5 && quarter.get(1).length() >= 2.5){
-                    listOfRhythms.set(8,listOfRhythms.get(8)+1);
+                    //listOfRhythms.set(8,listOfRhythms.get(8)+1);
+                    return 9;
                 }else if(quarter.get(0).length() >= 2.5 && quarter.get(1).length() <= 1.5){
-                    listOfRhythms.set(24,listOfRhythms.get(24)+1);
+                    //listOfRhythms.set(24,listOfRhythms.get(24)+1);
+                    return 25;
                 }
                 break;
             case 3:
                 listOfRhythms.set(28,listOfRhythms.get(28)+1);
                 if(quarter.get(0).length() >= 2.5 && quarter.get(0).length() <= 3.5 && quarter.get(1).length() >= 2.5 &&  quarter.get(1).length() <= 3.5 && quarter.get(2).length() >= 2.5 &&  quarter.get(2).length() <= 3.5){
-                    listOfRhythms.set(9,listOfRhythms.get(9)+1);
+                    //listOfRhythms.set(9,listOfRhythms.get(9)+1);
+                    return 8;
                 }else if(quarter.get(0).length() <= 2.0 && quarter.get(1).length() >= 4.5 && quarter.get(2).length() <= 3.0){
-                    listOfRhythms.set(10,listOfRhythms.get(10)+1);
+                    //listOfRhythms.set(10,listOfRhythms.get(10)+1);
+                    return 10;
                 }else if(quarter.get(0).length() >= 4.5 && quarter.get(1).length() <= 2.0 && quarter.get(2).length() <= 3.0){
-                    listOfRhythms.set(11,listOfRhythms.get(11)+1);
+                    //listOfRhythms.set(11,listOfRhythms.get(11)+1);
+                    return 11;
                 }else if(quarter.get(0).length() <= 3  && quarter.get(1).length() <= 2.0 && quarter.get(2).length() >= 4.5){
-                    listOfRhythms.set(12,listOfRhythms.get(12)+1);
+                    //listOfRhythms.set(12,listOfRhythms.get(12)+1);
+                    return 12;
                 }else if(quarter.get(0).length() <= 3 && quarter.get(1).length() >= 4.5 && quarter.get(2).length() <= 2.0){
-                    listOfRhythms.set(13,listOfRhythms.get(13)+1);
+                    //listOfRhythms.set(13,listOfRhythms.get(13)+1);
+                    return 13;
                 }else if(quarter.get(0).length() <= 1.5 && quarter.get(1).length() >= 4.0 && quarter.get(2).length() >= 4.0){
-                    listOfRhythms.set(25,listOfRhythms.get(25)+1);
+                    //listOfRhythms.set(25,listOfRhythms.get(25)+1);
+                    return 24;
                 }else if(quarter.get(0).length() <= 2.0){
-                    listOfRhythms.set(2,listOfRhythms.get(2)+1);
+                    //listOfRhythms.set(2,listOfRhythms.get(2)+1);
+                    return 2;
                 }else if(quarter.get(1).length() <= 2.0 ){
-                    listOfRhythms.set(3,listOfRhythms.get(3)+1);
+                    //listOfRhythms.set(3,listOfRhythms.get(3)+1);
+                    return 3;
                 }else if(quarter.get(2).length() <= 2.0){
-                    listOfRhythms.set(4,listOfRhythms.get(4)+1);
+                    //listOfRhythms.set(4,listOfRhythms.get(4)+1);
+                    return 4;
                 }
 
                 break;
             case 4:
                 listOfRhythms.set(29,listOfRhythms.get(29)+1);
                 if(quarter.get(0).length() >= 3.0 && quarter.get(1).length() >= 3.0 && quarter.get(2).length() >= 3.0 && quarter.get(3).length() >= 3.0){
-                    listOfRhythms.set(7,listOfRhythms.get(7)+1);
+                    //listOfRhythms.set(7,listOfRhythms.get(7)+1);
+                    return 7;
                 }else if( quarter.get(2).length() <= 3.0 && quarter.get(3).length() <= 3.0){
-                    listOfRhythms.set(14,listOfRhythms.get(14)+1);
+                    //listOfRhythms.set(14,listOfRhythms.get(14)+1);
+                    return 14;
                 }else if( quarter.get(2).length() <= 2.0){
-                    listOfRhythms.set(15,listOfRhythms.get(15)+1);
+                    //listOfRhythms.set(15,listOfRhythms.get(15)+1);
+                    return 15;
                 }else if( quarter.get(3).length() <= 2.0){
-                    listOfRhythms.set(16,listOfRhythms.get(16)+1);
+                    //listOfRhythms.set(16,listOfRhythms.get(16)+1);
+                    return 16;
                 }else if( quarter.get(0).length() <= 3.0 && quarter.get(3).length() <= 3.0){
-                    listOfRhythms.set(19,listOfRhythms.get(19)+1);
+                    //listOfRhythms.set(19,listOfRhythms.get(19)+1);
+                    return 19;
                 }else if( quarter.get(0).length() <= 3.0 && quarter.get(1).length() <= 3.0){
-                    listOfRhythms.set(21,listOfRhythms.get(21)+1);
+                    //listOfRhythms.set(21,listOfRhythms.get(21)+1);
+                    return 21;
                 }else if( quarter.get(0).length() <= 2.0 ){
-                    listOfRhythms.set(22,listOfRhythms.get(22)+1);
+                    //listOfRhythms.set(22,listOfRhythms.get(22)+1);
+                    return 22;
                 }else if( quarter.get(1).length() <= 2.0){
-                    listOfRhythms.set(23,listOfRhythms.get(23)+1);
+                    //listOfRhythms.set(23,listOfRhythms.get(23)+1);
+                    return 23;
                 }
 
                 break;
 
             case 5:
                 if(quarter.get(4).length() <= 4.0){
-                    listOfRhythms.set(17,listOfRhythms.get(17)+1);
+                    //listOfRhythms.set(17,listOfRhythms.get(17)+1);
+                    return 17;
                 }else if(quarter.get(0).length() <= 4.0){
-                    listOfRhythms.set(20,listOfRhythms.get(20)+1);
+                    //listOfRhythms.set(20,listOfRhythms.get(20)+1);
+                    return 20;
                 }
                 break;
 
             case 6:
-                listOfRhythms.set(18,listOfRhythms.get(18)+1);
-                break;
+                //listOfRhythms.set(18,listOfRhythms.get(18)+1);
+                return 18;
             default:
         }
-
+        throw new IllegalArgumentException("Non registered Orientation");
     }
 
-    public void TrochaicCheck(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
+    public String TrochaicCheck(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
         int diff =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         final int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
         String sharpNotater = "";
         if (diff< 0) sharpNotater = ".";
         diff =  Math.abs(diff)+1;
-        if(diff>=8) return;
+        if(diff>=8) return null;
 
         final String key = 1+ "" + Math.abs(diff)  + sharpNotater;
 
@@ -378,9 +416,11 @@ public class MidiLoader{
 
         }
 
+        return key;
+
     }
 
-    public void DactylCheck(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
+    public String DactylCheck(final ArrayList<MidiNote> quarter, final int keySig, final boolean majorKey){
         int diff1 =halfToneToTone(quarter.get(0).note(), quarter.get(1).note(), keySig, majorKey);
         int diff2 =halfToneToTone(quarter.get(0).note(), quarter.get(2).note(), keySig, majorKey);
         final int keyChromatic = chromaticToDiatonic(quarter.get(0).note(), keySig, majorKey);
@@ -391,7 +431,7 @@ public class MidiLoader{
         diff1 =  Math.abs(diff1)+1;
         diff2 =  Math.abs(diff2)+1;
 
-        if(diff1>=8 ||diff2>=8 ) return;
+        if(diff1>=8 ||diff2>=8 ) return null;
 
         final String key = 1+ "" + Math.abs(diff1) + sharpNotater1+ Math.abs(diff2) + sharpNotater2;
 
@@ -410,6 +450,8 @@ public class MidiLoader{
 
 
         }
+
+        return key;
 
     }
 

@@ -45,7 +45,7 @@ public class Model{
     public void onToneButton(){
         initList();
         midiLoader.setLists(toneList, rhythmList, mapOfTrochees, mapOfDactyles, mapOfKeys, mapOfTimeSigs);
-        midiLoader.countAll();
+        midiLoader.count(0);
         toneList = midiLoader.listOfTones();
         rhythmList = midiLoader.listOfRhythms();
         mapOfTrochees = midiLoader.mapOfTrochees();

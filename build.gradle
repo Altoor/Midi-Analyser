@@ -16,6 +16,31 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.7'
 
     id "com.github.johnrengelman.shadow" version "5.0.0"
+
+    id 'jacoco'
+}
+
+jacoco {
+    applyTo run
+}
+
+build {
+test.finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination file("$buildDir/jacocoHtml")
+    }
+}
+
+test {
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpDir = file("$buildDir/jacoco/classpathdumps")
+    }
 }
 
 javafx {
