@@ -24,8 +24,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 
 
-//TODO checkout https://stackoverflow.com/questions/3850688/reading-midi-files-in-java
-
 public class MidiLoader{
     public static final int NOTE_ON = 0x90;
     public static final int NOTE_OFF = 0x80;
@@ -43,6 +41,10 @@ public class MidiLoader{
     private ObservableList<String> filterTimeSig = FXCollections.observableArrayList();
     private ObservableList<String> filterKeySig = FXCollections.observableArrayList();
     private ObservableList<String> filterMajorSig = FXCollections.observableArrayList();
+
+    //For testing
+    private int finalKeySig;
+    private boolean finalMajorKey;
 
 
     public MidiLoader(final ArrayList<Integer> listOfTones, final ArrayList<Integer> listOfRhythms, final TreeMap<String, HashMap<Integer, Integer>> mapOfTrochees, final TreeMap<String, HashMap<Integer, Integer>> mapOfDactyles, final TreeMap<String, Integer> mapOfKeys, final TreeMap<String, Integer> mapOfTimeSigs){
@@ -90,7 +92,7 @@ public class MidiLoader{
 
             final ArrayList<MidiEvent> metaMessages = new ArrayList<MidiEvent>();
 
-            trackLoop:
+            
             for (final Track track : sequence.getTracks()) { 
                 int PPQ = sequence.getResolution();
                 long currQuarterTick = 0; // round down to nearest tick representing a quarter
@@ -416,6 +418,8 @@ public class MidiLoader{
 
         }
 
+        finalKeySig = keySig;
+        finalMajorKey = majorKey;
         return key;
 
     }
@@ -451,6 +455,8 @@ public class MidiLoader{
 
         }
 
+        finalKeySig = keySig;
+        finalMajorKey = majorKey;
         return key;
 
     }
@@ -620,6 +626,14 @@ public class MidiLoader{
 
     public File getMidiDirectory(){
         return midiDirectory;
+    }
+
+    public int getFinalKeySig(){
+        return finalKeySig;
+    }
+
+    public Boolean getfinalMajorKey(){
+        return finalMajorKey;
     }
 
     public void filterTimeSig(final ObservableList<String> items){

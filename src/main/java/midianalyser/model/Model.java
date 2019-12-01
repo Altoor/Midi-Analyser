@@ -1,14 +1,11 @@
 package midianalyser.model;
 
 import midianalyser.view.*;
-import midianalyser.*;
 
 import java.io.*;
 import java.util.*;
 
 import javafx.collections.ObservableList;
-import javafx.collections.ListChangeListener;
-import javafx.collections.FXCollections;
 
 public class Model{
     MidiLoader midiLoader;
