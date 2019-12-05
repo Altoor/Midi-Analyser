@@ -6,4 +6,4 @@ build
 
 #Ignore MAC-OS Files
 .DS_Store
-.class
+*.class
