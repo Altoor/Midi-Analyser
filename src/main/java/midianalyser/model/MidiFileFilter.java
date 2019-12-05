@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
- * @author Sebastian Bové Wagner <Sebastian@pda.dk>
+ * @author Sebastian Bové Wagner sebastian@pda.dk
  * @version 1.0
  */
 

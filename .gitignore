@@ -6,3 +6,7 @@ build
 
 #Ignore MAC-OS Files
 .DS_Store
+
+#ignore Java Class files
+*.class
+
