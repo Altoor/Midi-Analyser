@@ -82,9 +82,6 @@ public class Controller {
     @FXML
     private Color x4;
 
-    /**
-     *
-     */
     public void init(Model model) {
         // create the data to show in the CheckComboBox
         ObservableList<String> filterTimeSig = FXCollections.observableArrayList();
@@ -153,9 +150,6 @@ public class Controller {
     }
 
 
-    /**
-     *
-     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
