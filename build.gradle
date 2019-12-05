@@ -18,6 +18,9 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
 
     id 'jacoco'
+
+    id "de.inetsoftware.setupbuilder" version "4.8.6"
+
 }
 
 jacoco {
@@ -75,6 +78,24 @@ application {
     applicationDefaultJvmArgs = ['-Dgreeting.language=en']
 }
 
+setupBuilder {
+    application = "Midi Analyser"
+    appIdentifier = "MidiAnalyser"
+    version = '1.0'
+    licenseFile = 'LICENSE'
+    // all files for all platforms
+    from( 'build' ) {
+        include 'libs/Midi-Analyser-all.jar'
+    }
+    bundleJre = 1.8
+
+    setupBuilder.desktopStarter {
+        displayName = 'Midi Analyser'
+        executable = 'Midi-Analyser-all.jar'
+    }
+}
+
+
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     implementation 'com.google.guava:guava:27.0.1-jre'
@@ -89,9 +110,8 @@ dependencies {
 
      compile group: 'commons-io', name: 'commons-io', version: '1.4'
 
-
-
 }
+
 
 
 

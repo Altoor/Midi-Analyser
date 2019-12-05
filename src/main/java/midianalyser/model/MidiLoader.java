@@ -522,31 +522,6 @@ public class MidiLoader{
         return root;
     }
 
-    public void addKeySig(final int keySig, final boolean majorKey){
-        String key = "" +keyToString(rootNote(keySig,majorKey));
-        if(majorKey){
-            key += " major";
-        }else{
-            key += " minor";
-        }
-
-        if(mapOfKeys.get(key) == null){
-            mapOfKeys.put(key,1);
-        }else{
-            mapOfKeys.put(key,mapOfKeys.get(key)+1);
-        }
-    }
-
-    public void addTimeSig(final int timeSigNumerator, final int timeSigDenominator){
-        final String key = timeSigNumerator + "/" + timeSigDenominator;
-        if(mapOfTimeSigs.get(key) == null){
-            mapOfTimeSigs.put(key,1);
-        }else{
-            mapOfTimeSigs.put(key,mapOfTimeSigs.get(key)+1);
-        }
-
-    }
-
     public int keySigCheck(int note, final int keySig, final boolean majorKey){
 
         final int root =rootNote(keySig,majorKey);
@@ -591,6 +566,33 @@ public class MidiLoader{
 
         return (secondTone - firstTone);
     }
+
+    public void addKeySig(final int keySig, final boolean majorKey){
+        String key = "" +keyToString(rootNote(keySig,majorKey));
+        if(majorKey){
+            key += " major";
+        }else{
+            key += " minor";
+        }
+
+        if(mapOfKeys.get(key) == null){
+            mapOfKeys.put(key,1);
+        }else{
+            mapOfKeys.put(key,mapOfKeys.get(key)+1);
+        }
+    }
+
+    public void addTimeSig(final int timeSigNumerator, final int timeSigDenominator){
+        final String key = timeSigNumerator + "/" + timeSigDenominator;
+        if(mapOfTimeSigs.get(key) == null){
+            mapOfTimeSigs.put(key,1);
+        }else{
+            mapOfTimeSigs.put(key,mapOfTimeSigs.get(key)+1);
+        }
+
+    }
+
+    
 
     public void clearAnalytics(){
 
