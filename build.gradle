@@ -15,11 +15,11 @@ plugins {
 
     id 'org.openjfx.javafxplugin' version '0.0.7'
 
-    id "com.github.johnrengelman.shadow" version "5.1.0"
+    id "com.github.johnrengelman.shadow" version '5.1.0'
 
     id 'jacoco'
 
-    id "de.inetsoftware.setupbuilder" version "4.8.6"
+    id "de.inetsoftware.setupbuilder" version '4.8.6'
 
 }
 
@@ -109,6 +109,10 @@ dependencies {
     implementation 'org.controlsfx:controlsfx:9.0.1-SNAPSHOT' // org/controlsfx/controlsfx/9.0.1-SNAPSHOT/
 
      compile group: 'commons-io', name: 'commons-io', version: '1.4'
+
+}
+
+msi {
 
 }
 

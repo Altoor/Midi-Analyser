@@ -1,27 +1,27 @@
 package midianalyser.model;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.TreeMap;
 
-import java.util.*;
-
-import java.lang.Math;
-
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
-import javax.sound.midi.MetaMessage;
 import javax.sound.midi.Track;
-import javax.sound.midi.InvalidMidiDataException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.*;
-import java.io.IOException;
 
-
-import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class MidiLoader{
@@ -73,7 +73,6 @@ public class MidiLoader{
         for(final File file : midiFiles){
             System.out.println(file.getName());
         }
-        clearAnalytics();
 
     }
 
@@ -592,11 +591,6 @@ public class MidiLoader{
 
     }
 
-    
-
-    public void clearAnalytics(){
-
-    }
 
     public ArrayList<Integer> listOfTones(){
         return listOfTones;
